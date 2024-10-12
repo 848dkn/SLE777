@@ -173,14 +173,11 @@ total_coding_length <- data.frame(
 
 total_coding_length
 
-
-
-### 2.3 Calculate the length of all separate coding sequences
+### 2.3 Calculate the length of all coding sequences and box plot
 
 #Calculate the length of all coding sequences for both organisms
-lengths_ecoli <- width(Ecoli_sequences)  # Chiều dài của từng CDS của E. coli
-lengths_ecoli
-lengths_mycoplasma <- width(Mycoplasma_sequences)  # Chiều dài của từng CDS của Mycoplasma hyopneumoniae
+lengths_ecoli <- width(Ecoli_sequences)  # Length of CDS of E. coli
+lengths_mycoplasma <- width(Mycoplasma_sequences)  # Length of CDS of Mycoplasma hyopneumoniae
 
 #Create a data frame for the lengths
 sequence_lengths <- data.frame(
@@ -188,9 +185,6 @@ sequence_lengths <- data.frame(
                  times = c(length(lengths_ecoli), length(lengths_mycoplasma))),
   Length = c(lengths_ecoli, lengths_mycoplasma)
 )
-
-sequence_lengths
-
 
 #Load ggplot2 for visualization
 library(ggplot2)
@@ -201,7 +195,6 @@ ggplot(sequence_lengths, aes(x = Organism, y = Length)) +
   geom_boxplot(fill = c("#FF9999", "#99CCFF")) +
   labs(title = "Boxplot of Coding Sequence Lengths", x = "Organism", y = "Sequence Length (bp)") +
   theme_minimal()
-
 
 #Calculate mean and median for E. coli
 mean_length_ecoli <- mean(lengths_ecoli)
