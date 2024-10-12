@@ -19,11 +19,11 @@ head(gene_expression, n = 6)
 ```
 #### Input: 
 
-The ```download.file``` function is used to download files from a URL with the argument (destfile) specifies the destination path where the file will be saved locally. 
-The command ```read.delim``` reads a tab-separated file (.tsv) into a data frame. In this command, the argument ```header = TRUE``` and ```name =1```  is use to indicate that the first row contains the column names row and specify that the first column (gene identifiers) will be used as the row names of the data frame.
+The ```download.file``` function is used to download files from a URL with the argument ```destfile``` specifies the destination path where the file will be saved locally. 
+The command ```read.delim``` reads a tab-separated file (.tsv) into a data frame. In this command, the argument ```header = TRUE``` and ```name =1```  is use to indicate that the first row contains the column names row and specify that the first column ```gene identifiers``` will be used as the row names of the data frame.
 
 #### Output:
-The gene expression data is read into R as a data frame named gene_expression use for data manipulation. A table showing the first 6 genes.
+The gene expression data is read into R as a data frame named ```gene_expression``` use for data manipulation. A table showing the first 6 genes.
 
 ### 1.2 Adding a new column for the mean of other columns
 
@@ -39,7 +39,7 @@ table_of_values <- head(gene_expression, 6)
 print(table_of_values)  
 ````
 #### Input: 
-Command ```rowMeans()``` computes the mean of each row (gene), averaging expression values across the different sample columns. The mean values are saved into a variable to be added as a new column. The ```head()``` command is used to display the first six rows of the updated data frame for quick inspection
+Command ```rowMeans()``` computes the mean of each row, averaging expression values across the different sample columns. The mean values are saved into a variable to be added as a new column. The ```head()``` command is used to display the first six rows of the updated data frame for quick inspection
 #### Output: 
 A table showing the first six genes, including their expression values and the new mean expression column.
 
@@ -53,7 +53,7 @@ table_of_top10 <- top_genes[1:10, ]
 View(table_of_top10)
 ```
 #### Input: 
-The order() command sorts the data frame in descending order. The first 10 rows are sorted from the data frame as the top 10 genes.
+The ```order()```command sorts the data frame in descending order. The first 10 rows are sorted from the data frame as the top 10 genes.
 #### Output: 
 A table of the top 10 genes with the highest mean expression values.
 
@@ -66,11 +66,10 @@ low_expression_genes <- sum(gene_expression$Mean_Expression < 10)
 low_expression_genes
 ```
 #### Input: 
-Command ```ggplot()``` creates a histogram, with x = log10(Mean_Expression ). 
-Command ```geom_histogram()``` creates the histogram, and various parameters (binwidth, fill, color) control the appearance of the plot.
-Command ```labs()``` adds titles and axis labels, and ```theme_minimal()``` applies a minimalistic style to the plot (this is optional).
-#### Output: 
-A histogram visualizing the distribution of log-transformed mean gene expression values.
+Command ```sum()``` counts the number of genes in column ```Mean_Expression``` that are lower than 10
+### Output: 
+The count of genes where the mean expression is less than 10.
+
 
 ### 1.5  Plot Histogram of Mean Expression
 
@@ -83,7 +82,17 @@ library(ggplot2)
 ggplot(gene_expression, aes(x = log10(Mean_Expression + 1))) +  
   geom_histogram(binwidth = 0.1, fill = "blue", color = "black") +
   labs(title = "Histogram of Log10 Mean Gene Expression", x = "Log10 Mean Expression", y = "Frequency") +  theme_minimal()
+```
+#### Input: 
+Command ```ggplot()``` creates a histogram, with ```x = log10(Mean_Expression)```. 
+Command ```geom_histogram()``` creates the histogram, and various parameters (```binwidth```, ```fill```, ```color```) control the appearance of the plot.
+Command ```labs()``` adds titles and axis labels, and ```theme_minimal()``` applies a minimalistic style to the plot (this is optional).
+#### Output: 
+A histogram visualizing the distribution of log-transformed mean gene expression values.
+
+
 ### 1.6 Import Tree Circumference Growth Data and display column names
+```ruby
 #reading the CSV file
 growth_data <- read.csv("growth_data.csv")
 # view column names in console
@@ -182,6 +191,7 @@ print(t_test_result)
 #### Input: 
 Command ```t.test()``` performs a t-test to determine the significant difference in 10-year growth between the two sites.
 The ```~ Site``` grouping variable specifies that the growth differences should be compared between the sites.
+Command ```print()```shows the results
 #### Output: 
 The results of a t-test comparing the 10-year growth between the two sites
 
