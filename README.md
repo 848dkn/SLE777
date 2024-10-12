@@ -17,6 +17,12 @@ gene_expression <- read.delim("gene_expression.tsv", header = TRUE, row.names = 
 
 head(gene_expression, n = 6)
 ```
+#### Input: 
+
+The ```download.file``` function is used to download files from a URL with the argument (destfile) specifies the destination path where the file will be saved locally. 
+The command ```read.delim``` reads a tab-separated file (.tsv) into a data frame. In this command, the argument ```header = TRUE``` and ```name =1```  is use to indicate that the first row contains the column names row and specify that the first column (gene identifiers) will be used as the row names of the data frame.
+
+
 
 ### 1.2 Adding a new column for the mean of other columns
 
@@ -379,7 +385,7 @@ print(bottom_10_kmers_ecoli)
 ``` 
 
 
-##Plot mycoplasma vs ecoli k-mer
+## Plot mycoplasma vs ecoli k-mer
 
 ```ruby
 # Combine top and bottom k-mers from both organisms into a single data frame
