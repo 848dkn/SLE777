@@ -118,3 +118,104 @@ t_test_result <- t.test(Growthover10years ~ Site, data = growth_data)
 #print the t-test results
 print(t_test_result)
 
+## Part 2: Examining Biological Sequence Diversity
+### Install and load packages
+install.packages("Biostrings")
+install.packages("R.utils")
+install.packages("ggplot2")
+install.packages("seqinr")
+library(Biostrings)
+library("R.utils")
+library("ggplot2")
+library("seqinr")
+###2.1 Download and count Coding Sequences
+
+#Download coding sequences for Mesomycoplasma hyopneumoniae
+mh_url <- "https://ftp.ensemblgenomes.ebi.ac.uk/pub/bacteria/release-59/fasta/bacteria_40_collection/mesomycoplasma_hyopneumoniae_gca_004768725/cds/Mesomycoplasma_hyopneumoniae_gca_004768725.ASM476872v1.cds.all.fa.gz"
+download.file(mh_url, destfile = "mesomycoplasma_cds.fa.gz")
+gunzip("mesomycoplasma_cds.fa.gz")
+unzipmycoplasma <- seqinr::read.fasta("mesomycoplasma_cds.fa")
+
+#Download coding sequences for E. coli
+ecoli_url <- "http://ftp.ensemblgenomes.org/pub/bacteria/release-53/fasta/bacteria_0_collection/escherichia_coli_str_k_12_substr_mg1655_gca_000005845/cds/Escherichia_coli_str_k_12_substr_mg1655_gca_000005845.ASM584v2.cds.all.fa.gz"
+download.file(ecoli_url, destfile = "ecoli_cds.fa.gz")
+gunzip("ecoli_cds.fa.gz")
+unzipecoli <- seqinr::read.fasta("ecoli_cds.fa")
+
+#Read the sequences from the unzipped files
+Ecoli_sequences <- Biostrings::readDNAStringSet("ecoli_cds.fa")
+Mycoplasma_sequences <- Biostrings::readDNAStringSet("mesomycoplasma_cds.fa")
+
+#Count the number of sequences in both FASTA files
+num_sequences <- data.frame(Organism = c("E. coli", "Mycoplasma hyopneumoniae"),
+                            Num_CDS = c(length(Ecoli_sequences), length(Mycoplasma_sequences)))
+
+num_sequences
+
+
+### 2.2 Calculate total coding DNA for both organisms
+#Calculate total coding DNA 
+total_coding <- data.frame(Organism = c("E. coli", "Mycoplasma hyopneumoniae"),
+                           Total_Coding_DNA = c(sum(width(Ecoli_sequences)), sum(width(Mycoplasma_sequences))))
+total_coding #Present table for total coding DNA
+
+
+#Calculate total length of coding sequences for E. coli and Mycoplasma hyopneumoniae
+total_length_ecoli <- sum(width(Ecoli_sequences))
+total_length_ecoli
+total_length_mycoplasma <- sum(width(Mycoplasma_sequences))
+
+#Create a table with total coding DNA length
+total_coding_length <- data.frame(
+  Organism = c("E. coli", "Mycoplasma hyopneumoniae"),
+  Total_Coding_Length = c(total_length_ecoli, total_length_mycoplasma)
+)
+
+total_coding_length
+
+
+
+### 2.3 Calculate the length of all separate coding sequences
+
+#Calculate the length of all coding sequences for both organisms
+lengths_ecoli <- width(Ecoli_sequences)  # Chiều dài của từng CDS của E. coli
+lengths_ecoli
+lengths_mycoplasma <- width(Mycoplasma_sequences)  # Chiều dài của từng CDS của Mycoplasma hyopneumoniae
+
+#Create a data frame for the lengths
+sequence_lengths <- data.frame(
+  Organism = rep(c("E. coli", "Mycoplasma hyopneumoniae"), 
+                 times = c(length(lengths_ecoli), length(lengths_mycoplasma))),
+  Length = c(lengths_ecoli, lengths_mycoplasma)
+)
+
+sequence_lengths
+
+
+#Load ggplot2 for visualization
+library(ggplot2)
+
+#Create boxplot
+library(ggplot2)
+ggplot(sequence_lengths, aes(x = Organism, y = Length)) +
+  geom_boxplot(fill = c("#FF9999", "#99CCFF")) +
+  labs(title = "Boxplot of Coding Sequence Lengths", x = "Organism", y = "Sequence Length (bp)") +
+  theme_minimal()
+
+
+#Calculate mean and median for E. coli
+mean_length_ecoli <- mean(lengths_ecoli)
+median_length_ecoli <- median(lengths_ecoli)
+
+#Calculate mean and median for Mycoplasma hyopneumoniae
+mean_length_mycoplasma <- mean(lengths_mycoplasma)
+median_length_mycoplasma <- median(lengths_mycoplasma)
+
+#Create a table for mean and median lengths
+mean_median_lengths <- data.frame(
+  Organism = c("E. coli", "Mycoplasma hyopneumoniae"),
+  Mean_Length = c(mean_length_ecoli, mean_length_mycoplasma),
+  Median_Length = c(median_length_ecoli, median_length_mycoplasma)
+)
+
+mean_median_lengths
