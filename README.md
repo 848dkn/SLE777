@@ -286,9 +286,9 @@ print(mycoplasma_codon_usage)
 codon_usage
 
 
-###2.6 Identification of 10 protein sequence k-mers of length 3-5 
+###2.6 Comparison of Over and Under Represented Protein Sequence k-mers (3-5) in Mycoplasma hyopneumoniae and E. coli
 
-## Mycoplasma k-mer
+## Mycoplasma hyopneumoniae k-mer
 # Function to calculate k-mer frequencies for protein sequences
 calculate_kmers <- function(sequences, k) {
   kmers <- sapply(sequences, function(seq) {
