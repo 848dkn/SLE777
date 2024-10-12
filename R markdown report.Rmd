@@ -1,9 +1,6 @@
 ---
 title: "R markdown report"
-author: 
-"Bui Thai Hai Tran
-Chelsey Marie Maceren Medina
-Choudhary Simran"
+author: "Bui Thai Hai Tran, Chelsey Marie Maceren Medina, Choudhary Simran"
 date: "2024-10-12"
 output: html_document
 ---
@@ -12,15 +9,83 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+# Part 1: Gene Expression and Growth Data Analysis
+## 1.1 Read and Display Gene Expression Data
+```{r install_packages, echo=FALSE, eval=FALSE}
+#download required packages 
+install.packages("ggplot2")
+install.packages("dplyr")
+install.packages("tidyr")
+#download required files
+download.file("https://raw.githubusercontent.com/ghazkha/Assessment4/refs/heads/main/gene_expression.tsv", destfile = "gene_expression.tsv")
+download.file("https://raw.githubusercontent.com/ghazkha/Assessment4/refs/heads/main/growth_data.csv", destfile = "growth_data.csv")
 ```
+
+```{r load_and_print_table, echo=FALSE}
+# reading the file into R
+gene_expression <- read.delim("gene_expression.tsv", header = TRUE, row.names = 1)
+# displaying the first six rows
+first6row <- head(gene_expression, n = 6)
+knitr::kable(first6row)
+```
+
+
+The result shown in the figure is a gene expression table, in which the first row is the title of the biological samples from the GTEx (Genotype-Tissue Expression) project. For example, sample codes such as GTEX.1117F.0226.SM.5GZZ7, GTEX.1117F.0426.SM.5EGHI, and GTEX.1117F.0526.SM.5EGHJ represent biological samples from donors, corresponding to different conditions or tissues. The first column contains the ENSG identifiers (Ensembl Gene IDs) of the genes, such as ENSG00000223972.5 (DDX11L1) and ENSG00000227232.5 (WASH7P), which are used to identify the genes in the Ensembl database.
+The cells in the table contain the gene expression values. These values indicate the level of expression of each gene in each sample. For example, row 1 shows that the DDX11L1 gene is not expressed in all samples (value = 0). Row 2 shows that the WASH7P gene is highly expressed in the second sample (value = 187) and third sample (143), but not expressed in the first sample (value = 0). This table illustrates the differences in gene expression levels between biological samples, suggesting that gene expression may depend on tissue type, biological conditions, or other factors.
+
+
+## 1.2 Adding a new column for the mean of other columns
+```{r mean_of_columns, echo=FALSE}
+#give the mean of expression values a name
+meanofrow <- rowMeans(gene_expression) 
+#adding new column into table
+gene_expression$Mean_Expression <- meanofrow 
+#show a table of values for the first six genes
+table_of_values <- head(gene_expression, 6)
+
+knitr::kable(table_of_values) 
+```
+
+The results shown in the figure are the output of the R code you executed to analyze the gene expression data. For example, for the gene ENSG00000227232.5_WASH7P, the expression levels in the first three samples were 187, 109, and 143, respectively, with a Mean of 146.33. Other genes showed varying expression levels across samples, with some genes not expressed in all samples, such as ENSG00000223972.5_DDX11L1 and ENSG00000237613.2_FAM138A, resulting in a mean of 0. The practical significance of this result is important in analyzing gene expression patterns, as the mean provides a simple overview of the expression level of each gene across many different samples. This is useful in biological analyses such as identifying genes that are significantly expressed under specific conditions or in certain tissues. Overall, this data table allows for a clear comparison of the expression levels of genes and their average values. 
+
+
+## 1.3 List the 10 genes with the highest mean expression
+
+```{r list_10_genes, echo=FALSE}
+#sort by Mean_Expression and list top 10 in a table 
+top_genes <- gene_expression[order(-gene_expression$Mean_Expression), ]
+table_of_top10 <- top_genes[1:10, ]
+knitr::kable(table_of_top10)
+```
+
+The results shown in the figure provide information on the 10 genes with the highest mean expression, with the Mean_Expression value indicating the activity level of each gene in the samples. The most highly expressed gene is ENSG00000198804.2_MT-CO1, with a mean value of 529317.3. These genes, such as MT-CO1  and MT-ND4, are mitochondrial genes and may play an important role in biological processes. This list can aid in studying the function and role of these genes in specific diseases or conditions. 
+
+
+## 1.4 Determine the number of genes with a mean <10
+
+```{r gene_mean_<_10, echo=FALSE}
+#count and save number of genes with Mean_Expression < 10 as a value
+low_expression_genes <- sum(gene_expression$Mean_Expression < 10)
+knitr::kable(low_expression_genes)
+
+```
+
+The results showed that there were 35,988 genes in the dataset with a mean expression value (Mean_Expression) of less than 10. Determining the number of these genes helps researchers identify genes with low expression levels. 
+
+## 1.5  Plot Histogram of Mean Expression
+
+```{r plot_histogram_of_mean, echo=FALSE}
+#plot package
+library(ggplot2)
+#Apply a log10 transformation to the Mean Expression for better visualization
+#Added +1 to avoid log of zero
+ggplot(gene_expression, aes(x = log10(Mean_Expression + 1))) +  
+  geom_histogram(binwidth = 0.1, fill = "blue", color = "black") +
+  labs(title = "Histogram of Log10 Mean Gene Expression", x = "Log10 Mean Expression", y = "Frequency") +  theme_minimal()
+
+```
+
+
 
 ## Including Plots
 

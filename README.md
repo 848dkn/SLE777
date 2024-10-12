@@ -4,7 +4,10 @@
 ### 1.1 Reading the file and setting gene identifiers as row names
 
 ```ruby
-#download required files 
+#download required files and packages
+install.packages("ggplot2")
+install.packages("dplyr")
+install.packages("tidyr")
 download.file("https://raw.githubusercontent.com/ghazkha/Assessment4/refs/heads/main/gene_expression.tsv", destfile = "gene_expression.tsv")
 
 download.file("https://raw.githubusercontent.com/ghazkha/Assessment4/refs/heads/main/growth_data.csv", destfile = "growth_data.csv")
@@ -64,6 +67,7 @@ A table of the top 10 genes with the highest mean expression values.
 #count and save number of genes with Mean_Expression < 10 as a value
 low_expression_genes <- sum(gene_expression$Mean_Expression < 10)
 low_expression_genes
+
 ```
 #### Input: 
 Command ```sum()``` counts the number of genes in column ```Mean_Expression``` that are lower than 10
@@ -74,8 +78,7 @@ The count of genes where the mean expression is less than 10.
 ### 1.5  Plot Histogram of Mean Expression
 
 ```ruby
-#install plot package
-install.packages("ggplot2")
+#plot package
 library(ggplot2)
 #Apply a log10 transformation to the Mean Expression for better visualization
 #Added +1 to avoid log of zero
