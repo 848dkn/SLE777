@@ -22,7 +22,8 @@ head(gene_expression, n = 6)
 The ```download.file``` function is used to download files from a URL with the argument (destfile) specifies the destination path where the file will be saved locally. 
 The command ```read.delim``` reads a tab-separated file (.tsv) into a data frame. In this command, the argument ```header = TRUE``` and ```name =1```  is use to indicate that the first row contains the column names row and specify that the first column (gene identifiers) will be used as the row names of the data frame.
 
-
+#### Output:
+The gene expression data is read into R as a data frame named gene_expression use for data manipulation. A table showing the first 6 genes.
 
 ### 1.2 Adding a new column for the mean of other columns
 
@@ -37,6 +38,11 @@ gene_expression$Mean_Expression <- meanofrow
 table_of_values <- head(gene_expression, 6)  
 print(table_of_values)  
 ````
+#### Input: 
+Command ```rowMeans()``` computes the mean of each row (gene), averaging expression values across the different sample columns. The mean values are saved into a variable to be added as a new column. The ```head()``` command is used to display the first six rows of the updated data frame for quick inspection
+#### Output: 
+A table showing the first six genes, including their expression values and the new mean expression column.
+
 
 ### 1.3 List the 10 genes with the highest mean expression
 
@@ -46,6 +52,11 @@ top_genes <- gene_expression[order(-gene_expression$Mean_Expression), ]
 table_of_top10 <- top_genes[1:10, ]
 View(table_of_top10)
 ```
+#### Input: 
+The order() command sorts the data frame in descending order. The first 10 rows are sorted from the data frame as the top 10 genes.
+#### Output: 
+A table of the top 10 genes with the highest mean expression values.
+
 
 ### 1.4 Determine the number of genes with a mean <10
 
@@ -54,9 +65,14 @@ View(table_of_top10)
 low_expression_genes <- sum(gene_expression$Mean_Expression < 10)
 low_expression_genes
 ```
+#### Input: 
+Command ```ggplot()``` creates a histogram, with x = log10(Mean_Expression ). 
+Command ```geom_histogram()``` creates the histogram, and various parameters (binwidth, fill, color) control the appearance of the plot.
+Command ```labs()``` adds titles and axis labels, and ```theme_minimal()``` applies a minimalistic style to the plot (this is optional).
+#### Output: 
+A histogram visualizing the distribution of log-transformed mean gene expression values.
 
 ### 1.5  Plot Histogram of Mean Expression
-
 
 ```ruby
 #install plot package
@@ -73,6 +89,10 @@ growth_data <- read.csv("growth_data.csv")
 # view column names in console
 colnames(growth_data)
 ```
+#### Input: 
+Command ```read.csv()``` reads the CSV file into an R data frame, making the data ready for analysis. 
+#### Output:
+A data frame named ```growth_data```, containing the information from the CSV file.
 
 ### 1.7 Calculate the mean and standard deviation of tree circumference
 
@@ -91,6 +111,14 @@ summary_stats <- growth_data %>%
 #print the summary statistics
 print(summary_stats)
 ```
+#### Input: 
+Command ```library()``` load the required dplyr package. 
+Command ```group_by()``` groups the data by the Site column
+Command ```summarise()``` calculates summary statistics for each group of data from the command mean() and sd(), with the ```na.rm = TRUE``` argument ensuring that missing values (NA) are ignored during these calculations.
+Command print() displays the content of the data frame.
+#### Output: 
+A new data frame name ```summary_stats``` containing the mean and standard deviation of tree circumferences at both sites in 2005 and 2020.
+
 
 ### 1.8 Box plot of tree circumference at the start and end of the study at both sites
 
@@ -114,7 +142,12 @@ ggplot(long_data, aes(x = Year, y = Circumference, fill = Site)) +
        y = "Tree Circumference (cm)") +
   scale_x_discrete(labels = c("Circumf_2005_cm" = "2005", "Circumf_2020_cm" = "2020")) +  theme_minimal()
 ```  
-  
+#### Input: 
+Command ```library()``` load the required dplyr, tidyr and ggplot2 package
+Command ```pivot_longer()``` convert the wide-format data (with separate columns for each year) into long format that just has one column for the year and one for the circumference. The data frame created is turned into a plot using command ```ggplot()```  and ```geom_boxplot()``` which turn it into a boxplot with various commands to edit it including ```fill = Site``` differentiates the two sites using different colors, ```labs()``` adds title and axis labels and ```scale_x_discrete()``` name the axis lable.
+#### Ouput:
+A box plot comparing tree circumferences at both sites in 2005 and 2020.
+
 ### 1.9 Calculation of the mean growth over the last 10 years at each site
 
 ```ruby
@@ -148,7 +181,7 @@ library("R.utils")
 library("ggplot2")
 library("seqinr")
 ```
-###2.1 Download and count Coding Sequences
+### 2.1 Download and count Coding Sequences
 
 ```ruby
 #Download coding sequences for Mesomycoplasma hyopneumoniae
@@ -241,7 +274,7 @@ mean_median_lengths
 ```
 
 
-###2.4 The frequency of DNA bases in the total coding sequences for both organisms
+### 2.4 The frequency of DNA bases in the total coding sequences for both organisms
 
 ```ruby
 #Calculate base frequencies for E. coli
@@ -323,7 +356,7 @@ print(mycoplasma_codon_usage)
 codon_usage
 ```
 
-### 2.6 Comparison of Over and Under Represented Protein Sequence k-mers (3-5) in Mycoplasma hyopneumoniae and E. coli
+### 2.6 Comparison of Over and Under Represented Protein Sequence k-mers (3-5) in M. hyopneumoniae and E. coli
 
 ### Mycoplasma hyopneumoniae k-mer
 ```ruby
