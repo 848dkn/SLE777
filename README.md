@@ -161,12 +161,29 @@ mean_growth <- growth_data %>%
   summarise(Mean_Growth = mean(Growthover10years))  # Compute mean growth
 #print the mean growth
 print(mean_growth)
-### 1.10 Perform a t-test to estimate the p-value that the 10-year growth is different between the two sites
+```
+#### Input: 
+The pipe operator ```%>%``` takes the ```growth_data``` data frame and passes it as input to the next function in the chain. 
+Command ```mutate()``` adds a new column to the data frame that has a difference between the values of the start (2005) and end (2020) of the study. 
+Command ```group_by()``` groups the data by site.
+Command ```summarise(Mean_Growth = mean())``` summarises the average 10-year growth for each site.
+Command ```print()``` displays the mean growth for both sites.
+#### Output: 
+A summary table mean_growth that shows the mean growth over 10 years at each site.
+
+
+### 1.10 Perform a t-test to estimate the p-value
+```ruby
 #perform t-test to compare the growth between the two sites
 t_test_result <- t.test(Growthover10years ~ Site, data = growth_data)
 #print the t-test results
 print(t_test_result)
 ```
+#### Input: 
+Command ```t.test()``` performs a t-test to determine the significant difference in 10-year growth between the two sites.
+The ```~ Site``` grouping variable specifies that the growth differences should be compared between the sites.
+#### Output: 
+The results of a t-test comparing the 10-year growth between the two sites
 
 ## Part 2: Examining Biological Sequence Diversity
 
