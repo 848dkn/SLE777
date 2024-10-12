@@ -53,3 +53,31 @@ ggplot(gene_expression, aes(x = log10(Mean_Expression + 1))) +
   geom_histogram(binwidth = 0.1, fill = "blue", color = "black") +
   labs(title = "Histogram of Log10 Mean Gene Expression", x = "Log10 Mean Expression", y = "Frequency") +  theme_minimal()
 
+### 1.5  Plot Histogram of Mean Expression
+#install plot package
+install.packages("ggplot2")
+library(ggplot2)
+# Apply a log10 transformation to the Mean Expression for better visualization
+# Added +1 to avoid log of zero
+ggplot(gene_expression, aes(x = log10(Mean_Expression + 1))) +  
+  geom_histogram(binwidth = 0.1, fill = "blue", color = "black") +
+  labs(title = "Histogram of Log10 Mean Gene Expression", x = "Log10 Mean Expression", y = "Frequency") +  theme_minimal()
+### 1.6 Import Tree Circumference Growth Data and display column names
+# reading the CSV file
+growth_data <- read.csv("growth_data.csv")
+# view column names in console
+colnames(growth_data)
+### 1.7 Calculate the mean and standard deviation of tree circumference
+# load necessary libraries
+install.packages("dplyr")
+library(dplyr)
+#calculate the mean and standard deviation of tree circumferences at the start (2005) and end (2020) of the study for both control and treatment sites
+summary_stats <- growth_data %>%
+  group_by(Site) %>%
+  summarise(
+    Mean_Circumf_2005 = mean(Circumf_2005_cm, na.rm = TRUE),
+    SD_Circumf_2005 = sd(Circumf_2005_cm, na.rm = TRUE),
+    Mean_Circumf_2020 = mean(Circumf_2020_cm, na.rm = TRUE),
+    SD_Circumf_2020 = sd(Circumf_2020_cm, na.rm = TRUE)  )
+# print the summary statistics
+print(summary_stats)
