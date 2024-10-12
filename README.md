@@ -2,6 +2,8 @@
 ## Part 1: Gene Expression and Growth Data Analysis
 
 ### 1.1 Reading the file and setting gene identifiers as row names
+
+```ruby
 #download required files 
 download.file("https://raw.githubusercontent.com/ghazkha/Assessment4/refs/heads/main/gene_expression.tsv", destfile = "gene_expression.tsv")
 
@@ -14,9 +16,11 @@ gene_expression <- read.delim("gene_expression.tsv", header = TRUE, row.names = 
 #displaying the first six rows
 
 head(gene_expression, n = 6)
-
+```
 
 ### 1.2 Adding a new column for the mean of other columns
+
+```ruby
 #calculating the mean of expression values across the columns
 rowMeans(gene_expression) 
 #give the mean of expression values a name
@@ -26,34 +30,29 @@ gene_expression$Mean_Expression <- meanofrow
 #show a table of values for the first six genes
 table_of_values <- head(gene_expression, 6)  
 print(table_of_values)  
-
+````
 
 ### 1.3 List the 10 genes with the highest mean expression
 
+```ruby
 #sort by Mean_Expression and list top 10 in a table 
 top_genes <- gene_expression[order(-gene_expression$Mean_Expression), ]
 table_of_top10 <- top_genes[1:10, ]
 View(table_of_top10)
+```
 
 ### 1.4 Determine the number of genes with a mean <10
 
+```ruby
 #count and save number of genes with Mean_Expression < 10 as a value
 low_expression_genes <- sum(gene_expression$Mean_Expression < 10)
 low_expression_genes
-
-
-### 1.5  Plot Histogram of Mean Expression
-
-#install plot package
-install.packages("ggplot2")
-library(ggplot2)
-#Apply a log10 transformation to the Mean Expression for better visualization
-#Added +1 to avoid log of zero
-ggplot(gene_expression, aes(x = log10(Mean_Expression + 1))) +  
-  geom_histogram(binwidth = 0.1, fill = "blue", color = "black") +
-  labs(title = "Histogram of Log10 Mean Gene Expression", x = "Log10 Mean Expression", y = "Frequency") +  theme_minimal()
+```
 
 ### 1.5  Plot Histogram of Mean Expression
+
+
+```ruby
 #install plot package
 install.packages("ggplot2")
 library(ggplot2)
@@ -67,7 +66,11 @@ ggplot(gene_expression, aes(x = log10(Mean_Expression + 1))) +
 growth_data <- read.csv("growth_data.csv")
 # view column names in console
 colnames(growth_data)
+```
+
 ### 1.7 Calculate the mean and standard deviation of tree circumference
+
+```ruby
 #load necessary libraries
 install.packages("dplyr")
 library(dplyr)
@@ -81,8 +84,11 @@ summary_stats <- growth_data %>%
     SD_Circumf_2020 = sd(Circumf_2020_cm, na.rm = TRUE)  )
 #print the summary statistics
 print(summary_stats)
+```
 
 ### 1.8 Box plot of tree circumference at the start and end of the study at both sites
+
+```ruby
 # Load necessary libraries
 install.packages("tidyr")
 library(dplyr)
@@ -101,7 +107,11 @@ ggplot(long_data, aes(x = Year, y = Circumference, fill = Site)) +
        x = "Year",
        y = "Tree Circumference (cm)") +
   scale_x_discrete(labels = c("Circumf_2005_cm" = "2005", "Circumf_2020_cm" = "2020")) +  theme_minimal()
+```  
+  
 ### 1.9 Calculation of the mean growth over the last 10 years at each site
+
+```ruby
 #calculate the growth for each tree
 growth_data <- growth_data %>%
   mutate(Growthover10years = Circumf_2020_cm - Circumf_2010_cm)  #mutate add a new column that contain calculation
@@ -117,8 +127,11 @@ print(mean_growth)
 t_test_result <- t.test(Growthover10years ~ Site, data = growth_data)
 #print the t-test results
 print(t_test_result)
+```
 
 ## Part 2: Examining Biological Sequence Diversity
+
+```ruby
 ### Install and load packages
 install.packages("Biostrings")
 install.packages("R.utils")
@@ -128,8 +141,10 @@ library(Biostrings)
 library("R.utils")
 library("ggplot2")
 library("seqinr")
+```
 ###2.1 Download and count Coding Sequences
 
+```ruby
 #Download coding sequences for Mesomycoplasma hyopneumoniae
 mh_url <- "https://ftp.ensemblgenomes.ebi.ac.uk/pub/bacteria/release-59/fasta/bacteria_40_collection/mesomycoplasma_hyopneumoniae_gca_004768725/cds/Mesomycoplasma_hyopneumoniae_gca_004768725.ASM476872v1.cds.all.fa.gz"
 download.file(mh_url, destfile = "mesomycoplasma_cds.fa.gz")
@@ -151,9 +166,11 @@ num_sequences <- data.frame(Organism = c("E. coli", "Mycoplasma hyopneumoniae"),
                             Num_CDS = c(length(Ecoli_sequences), length(Mycoplasma_sequences)))
 
 num_sequences
-
+```
 
 ### 2.2 Calculate total coding DNA for both organisms
+
+```ruby
 #Calculate total coding DNA 
 total_coding <- data.frame(Organism = c("E. coli", "Mycoplasma hyopneumoniae"),
                            Total_Coding_DNA = c(sum(width(Ecoli_sequences)), sum(width(Mycoplasma_sequences))))
@@ -172,9 +189,12 @@ total_coding_length <- data.frame(
 )
 
 total_coding_length
+```
 
 ### 2.3 Calculate the length of all coding sequences and box plot
 
+
+```ruby
 #Calculate the length of all coding sequences for both organisms
 lengths_ecoli <- width(Ecoli_sequences)  # Length of CDS of E. coli
 lengths_mycoplasma <- width(Mycoplasma_sequences)  # Length of CDS of Mycoplasma hyopneumoniae
@@ -212,38 +232,46 @@ mean_median_lengths <- data.frame(
 )
 
 mean_median_lengths
+```
+
 
 ###2.4 The frequency of DNA bases in the total coding sequences for both organisms
-# Calculate base frequencies for E. coli
+
+```ruby
+#Calculate base frequencies for E. coli
 ecoli_base_frequencies <- alphabetFrequency(Ecoli_sequences, baseOnly = TRUE)
 
-# Calculate base frequencies for Mycoplasma hyopneumoniae
+#Calculate base frequencies for Mycoplasma hyopneumoniae
 mycoplasma_base_frequencies <- alphabetFrequency(Mycoplasma_sequences, baseOnly = TRUE)
 
 ecoli_frequencies <- colSums(ecoli_base_frequencies)
 mycoplasma_frequencies <- colSums(mycoplasma_base_frequencies)
 
 
-# Create a data frame for base frequencies
+#Create a data frame for base frequencies
 base_frequencies <- data.frame(
   Organism = rep(c("E. coli", "Mycoplasma hyopneumoniae"), each = 5),
   Base = rep(c("A", "T", "G", "C", "other")),
   Frequency = c(ecoli_frequencies, mycoplasma_frequencies))
 
 print(base_frequencies)
+```
 
-#Calculate frequency for total protein sequence
-# Translate DNA sequences to protein sequences
+
+### Calculate frequency for total protein sequence
+
+```ruby
+#Translate DNA sequences to protein sequences
 ecoli_protein_sequences <- Biostrings::translate(Ecoli_sequences)
 mycoplasma_protein_sequences <- Biostrings::translate(Mycoplasma_sequences)
 
-# Calculate amino acid frequencies for E. coli
+#Calculate amino acid frequencies for E. coli
 ecoli_amino_frequencies <- alphabetFrequency(ecoli_protein_sequences)
 
-# Calculate amino acid frequencies for Mycoplasma hyopneumoniae
+#Calculate amino acid frequencies for Mycoplasma hyopneumoniae
 mycoplasma_amino_frequencies <- alphabetFrequency(mycoplasma_protein_sequences)
 
-# Create a data frame for amino acid frequencies
+#Create a data frame for amino acid frequencies
 amino_frequencies <- data.frame(
   Organism = rep(c("E. coli", "Mycoplasma hyopneumoniae"), each = 62),
   Amino_Acid = rep(letters[1:31], times = 2),  # Assuming 20 amino acids
@@ -253,28 +281,31 @@ amino_frequencies <- data.frame(
 print(colSums(ecoli_amino_frequencies))
 print(colSums(mycoplasma_amino_frequencies))
 
-
-
-# Plot nucleotide frequencies
+#Plot nucleotide frequencies
 ggplot(base_frequencies, aes(x = Base, y = Frequency, fill = Organism)) + 
   geom_bar(stat = "identity", position = "dodge") + 
   labs(title = "Nucleotide Frequency Comparison", x = "Base", y = "Frequency")
+```
 
-# Plot amino acid frequencies
+```ruby
+#Plot amino acid frequencies
 ggplot(amino_frequencies, aes(x = Amino_Acid, y = Frequency, fill = Organism)) + 
   geom_bar(stat = "identity", position = "dodge") + 
   labs(title = "Amino Acid Frequency Comparison", x = "Amino Acid", y = "Frequency")
+```
 
+### 2.5 codon usage table and quantify the codon usage
 
-###2.5 codon usage table and quantify the codon usage
-# Calculate codon usage for E. coli
+```ruby
+#Calculate codon usage for E. coli
 ecoli_codon_usage <- uco(unzipecoli)
-# Calculate codon usage for Mycoplasma hyopneumoniae
+
+#Calculate codon usage for Mycoplasma hyopneumoniae
 mycoplasma_codon_usage <- uco(unzipmycoplasma)
 class(Mycoplasma_sequences)  # Kiểm tra loại đối tượng
 mycoplasma_vector <- as.character(Mycoplasma_sequences)
 
-# Create a table for codon usage
+#Create a table for codon usage
 codon_usage <- data.frame(
   Codon = names(ecoli_codon_usage),
   Ecoli_Usage = ecoli_codon_usage,
@@ -284,12 +315,13 @@ codon_usage <- data.frame(
 print(ecoli_codon_usage)
 print(mycoplasma_codon_usage)
 codon_usage
+```
 
+### 2.6 Comparison of Over and Under Represented Protein Sequence k-mers (3-5) in Mycoplasma hyopneumoniae and E. coli
 
-###2.6 Comparison of Over and Under Represented Protein Sequence k-mers (3-5) in Mycoplasma hyopneumoniae and E. coli
-
-## Mycoplasma hyopneumoniae k-mer
-# Function to calculate k-mer frequencies for protein sequences
+### Mycoplasma hyopneumoniae k-mer
+```ruby
+#Function to calculate k-mer frequencies for protein sequences
 calculate_kmers <- function(sequences, k) {
   kmers <- sapply(sequences, function(seq) {
     # Convert sequence to character string
@@ -306,44 +338,50 @@ calculate_kmers <- function(sequences, k) {
   kmer_freqs <- table(kmers)
   return(kmer_freqs)
 }
+```
 
-# Calculate 3-mer, 4-mer, and 5-mer frequencies for Mycoplasma hyopneumoniae protein sequences
+```ruby
+#Calculate 3-mer, 4-mer, and 5-mer frequencies for Mycoplasma hyopneumoniae protein sequences
 mycoplasma_kmers_3 <- calculate_kmers(mycoplasma_protein_sequences, 3)
 mycoplasma_kmers_4 <- calculate_kmers(mycoplasma_protein_sequences, 4)
 mycoplasma_kmers_5 <- calculate_kmers(mycoplasma_protein_sequences, 5)
 
-# Combine the k-mer frequencies into one
+#Combine the k-mer frequencies into one
 mycoplasma_kmers <- c(mycoplasma_kmers_3, mycoplasma_kmers_4, mycoplasma_kmers_5)
 
-# Sort and get top 10 over- and under-represented k-mers
+#Sort and get top 10 over- and under-represented k-mers
 top_10_kmers_mycoplasma <- head(sort(mycoplasma_kmers, decreasing = TRUE), 10)
 bottom_10_kmers_mycoplasma <- head(sort(mycoplasma_kmers, decreasing = FALSE), 10)
 
-# Print top 10 over- and under-represented k-mers
+#Print top 10 over- and under-represented k-mers
 print(top_10_kmers_mycoplasma)
 print(bottom_10_kmers_mycoplasma)
+```
 
+### Ecoli k-mer
 
-## Ecoli k-mer
-
-# Calculate k-mers for E. coli protein sequences
+```ruby
+#Calculate k-mers for E. coli protein sequences
 ecoli_kmers_3 <- calculate_kmers(ecoli_protein_sequences, 3)
 ecoli_kmers_4 <- calculate_kmers(ecoli_protein_sequences, 4)
 ecoli_kmers_5 <- calculate_kmers(ecoli_protein_sequences, 5)
 
-# Combine k-mers into one table for E. coli
+#Combine k-mers into one table for E. coli
 ecoli_kmers <- c(ecoli_kmers_3, ecoli_kmers_4, ecoli_kmers_5)
 
-# Get top 10 over- and under-represented k-mers in E. coli
+#Get top 10 over- and under-represented k-mers in E. coli
 top_10_kmers_ecoli <- head(sort(ecoli_kmers, decreasing = TRUE), 10)
 bottom_10_kmers_ecoli <- head(sort(ecoli_kmers, decreasing = FALSE), 10)
 
-# Print results
+#Print results
 print(top_10_kmers_ecoli)
 print(bottom_10_kmers_ecoli)
+``` 
+
 
 ##Plot mycoplasma vs ecoli k-mer
 
+```ruby
 # Combine top and bottom k-mers from both organisms into a single data frame
 combined_kmers <- data.frame(
   Kmer = c(names(top_10_kmers_mycoplasma), names(bottom_10_kmers_mycoplasma),
@@ -354,7 +392,9 @@ combined_kmers <- data.frame(
                    "E. coli", "E. coli"), each = 10),
   Representation = rep(c("Top 10", "Bottom 10"), times = 4)
 )
+```
 
+```ruby
 # Plot the k-mers
 ggplot(combined_kmers, aes(x = Kmer, y = Frequency, fill = Organism)) +
   geom_bar(stat = "identity", position = "dodge") +
@@ -362,9 +402,5 @@ ggplot(combined_kmers, aes(x = Kmer, y = Frequency, fill = Organism)) +
   labs(title = "Comparison of Over and Under K-mers", 
        x = "K-mers", y = "Frequency") +
   theme_minimal()
-
-```ruby
-require 'redcarpet'
-markdown = Redcarpet.new("Hello World!")
-puts markdown.to_html
 ```
+
