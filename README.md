@@ -1,5 +1,28 @@
 # SLE777
 ## Part 1: Gene Expression and Growth Data Analysis
+# Objectives of the Analysis
+Compute an average expression for each gene and exhibit the distribution of protein expression levels overall to provide a summary of gene expression.
+Detect Highly Expressed Genes: Develop a list comprising the top ten markers with the highest average expression values; these genes might be significant factors in the physiological procedure under consideration.
+
+
+
+## Code Summary and Output
+The code specifically looks to understand the distribution of gene expression from a given dataset across genes and tries to find key patterns. The following is what the above code accomplishes.
+Read and Prepare the Gene Expression Data The following code reads in gene expression data from a tab-separated file where gene identifiers are set to row names.
+The code computes the mean gene expression for each gene (row) across all of these conditions(columns). It then adds a new column Mean_Expression to its dataset, which has this calculated value.
+Top Genes: The code ranks the dataset using values from Mean_Expression and generates a list of 10 genes with maximum mean expression.
+Low-Expression Genes: It tells you a count of genes with an average expression value <10, which might indicate either non-expressed or lowly expressed under experimental conditions.
+Plots the Data: To better handle a broad spectrum of expression values, a log10 transformation is performed to develop a histogram that illustrates the range of the mean protein expression values.
+
+## Purpose of the Code
+### Installing a Package: R, like a lot of languages used for programming, gets its novel functionality and features from other libraries or packages. One of the most commonly employed R utilities for complex and adaptable representations of data is the ggplot2 package.
+
+#Explanation
+The ggplot2 package has been added and pulled from the CRAN (Comprehensive R Archive Network) online resource for R packages via the `install.packages("ggplot2")` command. R retrieves the ggplot2 package on CRAN, installs it on the machine where you are, and ultimately connects to it when it is executed. Usually, only in an instance that the package isn't already installed or once per session is this step important. You can load and use the bundle in current and future R sessions after it is successfully installed.
+
+### ggplot2 Package
+ggplot2 is a common R tool that facilitates the creation of a wide range of visualizations by adhering to the grammar of graphics, a lucid and consistent design framework. Charts like scatter plots, line graphs, and histograms are simple to make with ggplot2. Also, it offers you a plethora of personalization choices to precisely adjust things such as colors, labels, and scales to match your preferred visual style.
+
 
 ### 1.1 Reading the file and setting gene identifiers as row names
 
