@@ -81,3 +81,40 @@ summary_stats <- growth_data %>%
     SD_Circumf_2020 = sd(Circumf_2020_cm, na.rm = TRUE)  )
 #print the summary statistics
 print(summary_stats)
+
+### 1.8 Box plot of tree circumference at the start and end of the study at both sites
+# Load necessary libraries
+install.packages("tidyr")
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+#gather the data for Circumf_2005_cm and Circumf_2020_cm into long format
+long_data <- growth_data %>%
+  select(Site, Circumf_2005_cm, Circumf_2020_cm) %>%
+  pivot_longer(cols = starts_with("Circumf"), 
+               names_to = "Year", 
+               values_to = "Circumference")
+#create the box plot
+ggplot(long_data, aes(x = Year, y = Circumference, fill = Site)) +
+  geom_boxplot() +
+  labs(title = "Box Plot of Tree Circumference at Start and End of Study At Both Sites",
+       x = "Year",
+       y = "Tree Circumference (cm)") +
+  scale_x_discrete(labels = c("Circumf_2005_cm" = "2005", "Circumf_2020_cm" = "2020")) +  theme_minimal()
+### 1.9 Calculation of the mean growth over the last 10 years at each site
+#calculate the growth for each tree
+growth_data <- growth_data %>%
+  mutate(Growthover10years = Circumf_2020_cm - Circumf_2010_cm)  #mutate add a new column that contain calculation
+
+#calculate the mean growth at each site
+mean_growth <- growth_data %>%
+  group_by(Site) %>%
+  summarise(Mean_Growth = mean(Growthover10years))  # Compute mean growth
+#print the mean growth
+print(mean_growth)
+### 1.10 Perform a t-test to estimate the p-value that the 10-year growth is different between the two sites
+#perform t-test to compare the growth between the two sites
+t_test_result <- t.test(Growthover10years ~ Site, data = growth_data)
+#print the t-test results
+print(t_test_result)
+
