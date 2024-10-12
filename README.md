@@ -363,7 +363,6 @@ ggplot(combined_kmers, aes(x = Kmer, y = Frequency, fill = Organism)) +
        x = "K-mers", y = "Frequency") +
   theme_minimal()
 
-
 ```ruby
 require 'redcarpet'
 markdown = Redcarpet.new("Hello World!")
