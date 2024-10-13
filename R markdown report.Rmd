@@ -177,5 +177,319 @@ The table in section 1.9 shows the average growth of tree girth from 2010 to 202
 The table in section 1.10 shows the results of Welch's t-test, which tests whether the difference in average growth between the two regions is statistically significant. The test results yield a p-value of 0.06229, slightly above the common threshold of 0.05. This means that the difference in growth is not statistically significant at the 5% level. However, this value is close to significance, suggesting that the difference may be significant, but the statistical evidence from this test is limited.
 
 
+## Part 2: Examining Biological Sequence Diversity
 
+``` {r install_load_packages, echo=FALSE, message=FALSE, warning=FALSE}
+### Install and load packages
+install.packages("Biostrings")
+install.packages("R.utils")
+install.packages("ggplot2")
+install.packages("seqinr")
+install.packages("tidyr")
+library(Biostrings)
+library("R.utils")
+library("ggplot2")
+library("seqinr")
+library("tidyr")
+```
+
+###2.1 Download and count Coding Sequences
+
+```{r download_count_cds, echo=FALSE, eval=FALSE}
+#Download coding sequences for Mesomycoplasma hyopneumoniae
+mh_url <- "https://ftp.ensemblgenomes.ebi.ac.uk/pub/bacteria/release-59/fasta/bacteria_40_collection/mesomycoplasma_hyopneumoniae_gca_004768725/cds/Mesomycoplasma_hyopneumoniae_gca_004768725.ASM476872v1.cds.all.fa.gz"
+download.file(mh_url, destfile = "mesomycoplasma_cds.fa.gz")
+gunzip("mesomycoplasma_cds.fa.gz")
+unzipmycoplasma <- seqinr::read.fasta("mesomycoplasma_cds.fa")
+
+#Download coding sequences for E. coli
+ecoli_url <- "http://ftp.ensemblgenomes.org/pub/bacteria/release-53/fasta/bacteria_0_collection/escherichia_coli_str_k_12_substr_mg1655_gca_000005845/cds/Escherichia_coli_str_k_12_substr_mg1655_gca_000005845.ASM584v2.cds.all.fa.gz"
+download.file(ecoli_url, destfile = "ecoli_cds.fa.gz")
+gunzip("ecoli_cds.fa.gz")
+unzipecoli <- seqinr::read.fasta("ecoli_cds.fa")
+
+#Read the sequences from the unzipped files
+Ecoli_sequences <- Biostrings::readDNAStringSet("ecoli_cds.fa")
+Mycoplasma_sequences <- Biostrings::readDNAStringSet("mesomycoplasma_cds.fa")
+
+#Count the number of sequences in both FASTA files
+num_sequences <- data.frame(Organism = c("E. coli", "Mycoplasma hyopneumoniae"),
+                            Num_CDS = c(length(Ecoli_sequences), length(Mycoplasma_sequences)))
+
+# Print the result using knitr::kable
+knitr::kable(num_sequences)
+
+```
+
+
+### 2.2 Calculate total coding DNA for both organisms
+```{r calculate_total, echo=FALSE, eval=FALSE}
+#Calculate total coding DNA 
+total_coding <- data.frame(Organism = c("E. coli", "Mycoplasma hyopneumoniae"),
+                           Total_Coding_DNA = c(sum(width(Ecoli_sequences)), sum(width(Mycoplasma_sequences))))
+total_coding #Present table for total coding DNA
+
+
+#Calculate total length of coding sequences for E. coli and Mycoplasma hyopneumoniae
+total_length_ecoli <- sum(width(Ecoli_sequences))
+total_length_ecoli
+total_length_mycoplasma <- sum(width(Mycoplasma_sequences))
+
+#Create a table with total coding DNA length
+total_coding_length <- data.frame(
+  Organism = c("E. coli", "Mycoplasma hyopneumoniae"),
+  Total_Coding_Length = c(total_length_ecoli, total_length_mycoplasma)
+)
+
+
+# Print the result using knitr::kable
+knitr::kable(total_coding_length)
+
+
+```
+
+The table indicates that E. coli has a significantly larger total coding DNA length compared to Mycoplasma hyopneumoniae. This result reflects the difference in genome size, with E. coli possessing more genes and, consequently, more coding sequences.
+
+
+### 2.3 Calculate the length of all coding sequences and box plot
+```{r calculate_length, echo=FALSE, message=FALSE, warning=FALSE}
+#Calculate the length of all coding sequences for both organisms
+lengths_ecoli <- width(Ecoli_sequences)  # Length of CDS of E. coli
+lengths_mycoplasma <- width(Mycoplasma_sequences)  # Length of CDS of Mycoplasma hyopneumoniae
+
+#Create a data frame for the lengths
+sequence_lengths <- data.frame(
+  Organism = rep(c("E. coli", "Mycoplasma hyopneumoniae"), 
+                 times = c(length(lengths_ecoli), length(lengths_mycoplasma))),
+  Length = c(lengths_ecoli, lengths_mycoplasma)
+)
+
+#Load ggplot2 for visualization
+library(ggplot2)
+
+#Create boxplot
+library(ggplot2)
+ggplot(sequence_lengths, aes(x = Organism, y = Length)) +
+  geom_boxplot(fill = c("#FF9999", "#99CCFF")) +
+  labs(title = "Boxplot of Coding Sequence Lengths", x = "Organism", y = "Sequence Length (bp)") +
+  theme_minimal()
+
+#Calculate mean and median for E. coli
+mean_length_ecoli <- mean(lengths_ecoli)
+median_length_ecoli <- median(lengths_ecoli)
+
+#Calculate mean and median for Mycoplasma hyopneumoniae
+mean_length_mycoplasma <- mean(lengths_mycoplasma)
+median_length_mycoplasma <- median(lengths_mycoplasma)
+
+#Create a table for mean and median lengths
+mean_median_lengths <- data.frame(
+  Organism = c("E. coli", "Mycoplasma hyopneumoniae"),
+  Mean_Length = c(mean_length_ecoli, mean_length_mycoplasma),
+  Median_Length = c(median_length_ecoli, median_length_mycoplasma)
+)
+
+# Print the result using knitr::kable
+knitr::kable(mean_median_lengths)
+
+
+```
+
+The boxplot indicates that E. coli coding sequences are generally longer than Mycoplasma hyopneumoniae. Outliers exist in both groups, but E. coli sequences are typically longer (Weber et al., 2012). The calculated mean and median values further emphasize the difference, as E. coli has longer coding sequences on average than Mycoplasma hyopneumoniae.
+
+###2.4 The frequency of DNA bases in the total coding sequences for both organisms
+
+```{r calculate_frequency, echo=FALSE}
+# Calculate base frequencies for E. coli
+ecoli_base_frequencies <- alphabetFrequency(Ecoli_sequences, baseOnly = TRUE)
+
+# Calculate base frequencies for Mycoplasma hyopneumoniae
+mycoplasma_base_frequencies <- alphabetFrequency(Mycoplasma_sequences, baseOnly = TRUE)
+
+ecoli_frequencies <- colSums(ecoli_base_frequencies)
+mycoplasma_frequencies <- colSums(mycoplasma_base_frequencies)
+
+
+# Create a data frame for base frequencies
+base_frequencies <- data.frame(
+  Organism = rep(c("E. coli", "Mycoplasma hyopneumoniae"), each = 5),
+  Base = rep(c("A", "T", "G", "C", "other")),
+  Frequency = c(ecoli_frequencies, mycoplasma_frequencies))
+
+print(base_frequencies)
+
+# Print the result using knitr::kable
+knitr::kable(base_frequencies)
+
+#Calculate frequency for total protein sequence
+# Translate DNA sequences to protein sequences
+ecoli_protein_sequences <- Biostrings::translate(Ecoli_sequences)
+mycoplasma_protein_sequences <- Biostrings::translate(Mycoplasma_sequences)
+
+# Calculate amino acid frequencies for E. coli
+ecoli_amino_frequencies <- alphabetFrequency(ecoli_protein_sequences)
+
+# Calculate amino acid frequencies for Mycoplasma hyopneumoniae
+mycoplasma_amino_frequencies <- alphabetFrequency(mycoplasma_protein_sequences)
+
+# Create a data frame for amino acid frequencies
+amino_frequencies <- data.frame(
+  Organism = rep(c("E. coli", "Mycoplasma hyopneumoniae"), each = 62),
+  Amino_Acid = rep(letters[1:31], times = 2),  # Assuming 20 amino acids
+  Frequency = c(colSums(ecoli_amino_frequencies), colSums(mycoplasma_amino_frequencies)))
+
+
+print(colSums(ecoli_amino_frequencies))
+print(colSums(mycoplasma_amino_frequencies))
+
+# Print the result using knitr::kable
+knitr::kable(colSums(ecoli_amino_frequencies))
+
+# Print the result using knitr::kable
+knitr::kable((mycoplasma_amino_frequencies))
+
+# Plot nucleotide frequencies
+ggplot(base_frequencies, aes(x = Base, y = Frequency, fill = Organism)) + 
+  geom_bar(stat = "identity", position = "dodge") + 
+  labs(title = "Nucleotide Frequency Comparison", x = "Base", y = "Frequency")
+
+# Plot amino acid frequencies
+ggplot(amino_frequencies, aes(x = Amino_Acid, y = Frequency, fill = Organism)) + 
+  geom_bar(stat = "identity", position = "dodge") + 
+  labs(title = "Amino Acid Frequency Comparison", x = "Amino Acid", y = "Frequency")
+
+```
+
+The differences between E. coli and Mycoplasma hyopneumoniae in Amino acid frequency presumably reflect protein function variations (Gautier-Bouchardon, 2018). E. coli may favor arginine-rich proteins, while Mycoplasma hyopneumoniae may prefer lysine-rich ones. Based on the amino acids of the organisms, the protein composition is influenced by factors like hydrophobicity and charge (Jarocki et al., 2015, Price et al., 2011).
+
+###2.5 codon usage table and quantify the codon usage
+```{r codon_usage, echo=FALSE}
+# Calculate codon usage for E. coli
+ecoli_codon_usage <- uco(unzipecoli)
+# Calculate codon usage for Mycoplasma hyopneumoniae
+mycoplasma_codon_usage <- uco(unzipmycoplasma)
+class(Mycoplasma_sequences)  # Kiểm tra loại đối tượng
+mycoplasma_vector <- as.character(Mycoplasma_sequences)
+
+# Create a table for codon usage
+codon_usage <- data.frame(
+  Codon = names(ecoli_codon_usage),
+  Ecoli_Usage = ecoli_codon_usage,
+  Mycoplasma_Usage = mycoplasma_codon_usage
+)
+
+print(ecoli_codon_usage)
+print(mycoplasma_codon_usage)
+codon_usage
+
+# Print the result using knitr::kable
+knitr::kable(ecoli_codon_usage)
+
+# Print the result using knitr::kable
+knitr::kable(mycoplasma_codon_usage)
+
+# Print the result using knitr::kable
+knitr::kable(codon_usage)
+
+```
+
+
+
+###2.6 Comparison of Over and Under Represented Protein Sequence k-mers (3-5) in Mycoplasma hyopneumoniae and E. coli
+```{r codon_usage, echo=FALSE}
+## Mycoplasma hyopneumoniae k-mer
+# Function to calculate k-mer frequencies for protein sequences
+calculate_kmers <- function(sequences, k) {
+  kmers <- sapply(sequences, function(seq) {
+    # Convert sequence to character string
+    seq <- as.character(seq)
+    # Extract all possible k-mers from the sequence
+    kmer_list <- sapply(1:(nchar(seq) - k + 1), function(i) {
+      substr(seq, i, i + k - 1)
+    })
+    return(kmer_list)
+  })
+  
+  # Flatten the list of k-mers and calculate frequencies
+  kmers <- unlist(kmers)
+  kmer_freqs <- table(kmers)
+  return(kmer_freqs)
+}
+
+# Calculate 3-mer, 4-mer, and 5-mer frequencies for Mycoplasma hyopneumoniae protein sequences
+mycoplasma_kmers_3 <- calculate_kmers(mycoplasma_protein_sequences, 3)
+mycoplasma_kmers_4 <- calculate_kmers(mycoplasma_protein_sequences, 4)
+mycoplasma_kmers_5 <- calculate_kmers(mycoplasma_protein_sequences, 5)
+
+# Combine the k-mer frequencies into one
+mycoplasma_kmers <- c(mycoplasma_kmers_3, mycoplasma_kmers_4, mycoplasma_kmers_5)
+
+# Sort and get top 10 over- and under-represented k-mers
+top_10_kmers_mycoplasma <- head(sort(mycoplasma_kmers, decreasing = TRUE), 10)
+bottom_10_kmers_mycoplasma <- head(sort(mycoplasma_kmers, decreasing = FALSE), 10)
+
+# Print top 10 over- and under-represented k-mers
+print(top_10_kmers_mycoplasma)
+print(bottom_10_kmers_mycoplasma)
+
+# Print the result using knitr::kable
+knitr::kable(top_10_kmers_mycoplasma)
+# Print the result using knitr::kable
+knitr::kable(bottom_10_kmers_mycoplasma)
+
+## Ecoli k-mer
+
+# Calculate k-mers for E. coli protein sequences
+ecoli_kmers_3 <- calculate_kmers(ecoli_protein_sequences, 3)
+ecoli_kmers_4 <- calculate_kmers(ecoli_protein_sequences, 4)
+ecoli_kmers_5 <- calculate_kmers(ecoli_protein_sequences, 5)
+
+# Combine k-mers into one table for E. coli
+ecoli_kmers <- c(ecoli_kmers_3, ecoli_kmers_4, ecoli_kmers_5)
+
+# Get top 10 over- and under-represented k-mers in E. coli
+top_10_kmers_ecoli <- head(sort(ecoli_kmers, decreasing = TRUE), 10)
+bottom_10_kmers_ecoli <- head(sort(ecoli_kmers, decreasing = FALSE), 10)
+
+# Print results
+print(top_10_kmers_ecoli)
+print(bottom_10_kmers_ecoli)
+
+# Print the result using knitr::kable
+knitr::kable(top_10_kmers_ecoli)
+# Print the result using knitr::kable
+knitr::kable(bottom_10_kmers_ecoli)
+
+##Plot mycoplasma vs ecoli k-mer
+
+# Combine top and bottom k-mers from both organisms into a single data frame
+combined_kmers <- data.frame(
+  Kmer = c(names(top_10_kmers_mycoplasma), names(bottom_10_kmers_mycoplasma),
+           names(top_10_kmers_ecoli), names(bottom_10_kmers_ecoli)),
+  Frequency = c(top_10_kmers_mycoplasma, bottom_10_kmers_mycoplasma,
+                top_10_kmers_ecoli, bottom_10_kmers_ecoli),
+  Organism = rep(c("Mycoplasma hyopneumoniae", "Mycoplasma hyopneumoniae", 
+                   "E. coli", "E. coli"), each = 10),
+  Representation = rep(c("Top 10", "Bottom 10"), times = 4)
+)
+
+# Plot the k-mers
+ggplot(combined_kmers, aes(x = Kmer, y = Frequency, fill = Organism)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~ Representation) +
+  labs(title = "Comparison of Over and Under K-mers", 
+       x = "K-mers", y = "Frequency") +
+  theme_minimal()
+
+```
+This analysis identifies over- and under-represented k-mers in Mycoplasma hyopneumoniae and E. coli protein sequences. These differences may reflect functional or evolutionary factors shaping protein composition (Chen et al., 2022). Variations in k-mer frequencies likely stem from genomic and proteomic differences, such as gene presence, regulatory elements, codon usage bias, and nucleotide composition (Bize et al., 2021).
+
+
+References
+BIZE, A., MIDOUX, C., MARIADASSOU, M., SCHBATH, S., FORTERRE, P. & DA CUNHA, V. 2021. Exploring short k-mer profiles in cells and mobile elements from Archaea highlights the major influence of both the ecological niche and evolutionary history. BMC genomics, 22, 1-22.
+CHEN, R., ZHAO, L., GAN, R., FENG, Z., CUI, C., XIE, X., HAO, F., ZHANG, Z., WANG, L. & RAN, T. 2022. Evidence for the rapid and divergent evolution of mycoplasmas: structural and phylogenetic analysis of enolases. Frontiers in Molecular Biosciences, 8, 811106.
+GAUTIER-BOUCHARDON, A. V. 2018. Antimicrobial resistance in Mycoplasma spp. Microbiology spectrum, 6, 10.1128/microbiolspec. arba-0030-2018.
+JAROCKI, V. M., SANTOS, J., TACCHI, J. L., RAYMOND, B. B., DEUTSCHER, A. T., JENKINS, C., PADULA, M. P. & DJORDJEVIC, S. P. 2015. MHJ_0461 is a multifunctional leucine aminopeptidase on the surface of Mycoplasma hyopneumoniae. Open biology, 5, 140175.
+PRICE, W. N., HANDELMAN, S. K., EVERETT, J. K., TONG, S. N., BRACIC, A., LUFF, J. D., NAUMOV, V., ACTON, T., MANOR, P. & XIAO, R. 2011. Large-scale experimental studies show unexpected amino acid effects on protein expression and solubility in vivo in E. coli. Microbial Informatics and Experimentation, 1, 1-20.
+WEBER, S. D. S., SANT'ANNA, F. H. & SCHRANK, I. S. 2012. Unveiling Mycoplasma hyopneumoniae promoters: sequence definition and genomic distribution. DNA research, 19, 103-115.
 
