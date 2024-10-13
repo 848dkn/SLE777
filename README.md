@@ -15,6 +15,7 @@ Compute an average expression for each gene and exhibit the distribution of prot
 Detect Highly Expressed Genes: Develop a list comprising the top ten markers with the highest average expression values; these genes might be significant factors in the physiological procedure under consideration.
 
  
+ 
 
 ## Code Summary and Output
 The code specifically looks to understand the distribution of gene expression from a given dataset across genes and tries to find key patterns. The following is what the above code accomplishes.
