@@ -274,6 +274,7 @@ library("seqinr")
 ### 2.1 Download and count Coding Sequences
 
 ```ruby
+```{r download_count_cds, echo=FALSE, eval=FALSE}
 #Download coding sequences for Mesomycoplasma hyopneumoniae
 mh_url <- "https://ftp.ensemblgenomes.ebi.ac.uk/pub/bacteria/release-59/fasta/bacteria_40_collection/mesomycoplasma_hyopneumoniae_gca_004768725/cds/Mesomycoplasma_hyopneumoniae_gca_004768725.ASM476872v1.cds.all.fa.gz"
 download.file(mh_url, destfile = "mesomycoplasma_cds.fa.gz")
@@ -294,7 +295,8 @@ Mycoplasma_sequences <- Biostrings::readDNAStringSet("mesomycoplasma_cds.fa")
 num_sequences <- data.frame(Organism = c("E. coli", "Mycoplasma hyopneumoniae"),
                             Num_CDS = c(length(Ecoli_sequences), length(Mycoplasma_sequences)))
 
-num_sequences
+# Print the result using knitr::kable
+knitr::kable(num_sequences)
 ```
 #### Input:
 The ```download.file``` function is used to download FASTA files containing the coding sequences (CDS) for Escherichia coli and Mycoplasma hyopneumoniae. The downloaded files are compressed in ```.fa.gz``` format and unzipped using the ```gunzip``` command. The unzipped CDS were then read into R using the ```seqinr::read.fasta``` and ```Biostrings::readDNAStringSet``` functions for handling biological sequence data. Finally, the ```length``` function counts the number of coding sequences in each organism.
@@ -305,6 +307,7 @@ A table showing the number of coding sequences for both organisms, E. coli and M
 ### 2.2 Calculate total coding DNA for both organisms
 
 ```ruby
+```{r calculate_total, echo=FALSE, eval=FALSE}
 #Calculate total coding DNA 
 total_coding <- data.frame(Organism = c("E. coli", "Mycoplasma hyopneumoniae"),
                            Total_Coding_DNA = c(sum(width(Ecoli_sequences)), sum(width(Mycoplasma_sequences))))
@@ -322,7 +325,11 @@ total_coding_length <- data.frame(
   Total_Coding_Length = c(total_length_ecoli, total_length_mycoplasma)
 )
 
-total_coding_length
+
+# Print the result using knitr::kable
+knitr::kable(total_coding_length)
+
+
 ```
 #### Input: The ```width``` function is applied to both E. coli and Mycoplasma hyopneumoniae sequences to calculate the length (in base pairs) of each coding sequence (CDS). The ```sum``` function is then used to compute the total length of all coding DNA for each organism. The results are stored in a ```data.frame``` showing the total coding DNA length for both organisms.
 #### Output: A table displaying the total length of coding DNA (in base pairs) for E. coli and Mycoplasma hyopneumoniae.
@@ -332,6 +339,7 @@ total_coding_length
 
 
 ```ruby
+```{r calculate_length, echo=FALSE, message=FALSE, warning=FALSE}
 #Calculate the length of all coding sequences for both organisms
 lengths_ecoli <- width(Ecoli_sequences)  # Length of CDS of E. coli
 lengths_mycoplasma <- width(Mycoplasma_sequences)  # Length of CDS of Mycoplasma hyopneumoniae
@@ -368,7 +376,9 @@ mean_median_lengths <- data.frame(
   Median_Length = c(median_length_ecoli, median_length_mycoplasma)
 )
 
-mean_median_lengths
+# Print the result using knitr::kable
+knitr::kable(mean_median_lengths)
+
 ```
 #### Input: The ```width``` function is used to calculate the length (in base pairs) of each coding sequence (CDS) for both E. coli and Mycoplasma hyopneumoniae. The lengths are then stored in a ```data.frame``` that includes the organism's name and the corresponding sequence lengths. Using ```ggplot2```, a boxplot is created to visualize the distribution of coding sequence lengths for both organisms.
 Additionally, the ```mean``` and ```median``` functions are used to calculate the average and median lengths of coding sequences for both organisms.
@@ -396,6 +406,8 @@ base_frequencies <- data.frame(
   Frequency = c(ecoli_frequencies, mycoplasma_frequencies))
 
 print(base_frequencies)
+# Print the result using knitr::kable
+knitr::kable(base_frequencies)
 ```
 #### Input: The ```alphabetFrequency``` function calculates DNA and amino acid base frequencies in E. coli and Mycoplasma hyopneumoniae coding sequences. These frequencies are aggregated and visualized using ```colSums``` and ```ggplot2```.
 #### Output: A data frame of the frequency of DNA bases, amino acids and bar plot of nucleotide and amino acids frequencies between E. coli and Mycoplasma hyopneumoniae.
@@ -423,6 +435,12 @@ amino_frequencies <- data.frame(
 
 print(colSums(ecoli_amino_frequencies))
 print(colSums(mycoplasma_amino_frequencies))
+
+# Print the result using knitr::kable
+knitr::kable(colSums(ecoli_amino_frequencies))
+
+# Print the result using knitr::kable
+knitr::kable((mycoplasma_amino_frequencies))
 
 #Plot nucleotide frequencies
 ggplot(base_frequencies, aes(x = Base, y = Frequency, fill = Organism)) + 
@@ -458,9 +476,16 @@ codon_usage <- data.frame(
 print(ecoli_codon_usage)
 print(mycoplasma_codon_usage)
 codon_usage
+
+# Print the result using knitr::kable
+knitr::kable(ecoli_codon_usage)
+
+# Print the result using knitr::kable
+knitr::kable(mycoplasma_codon_usage)
+
 ```
 
-#### Input: The “uco” function is used to calculate codon usage for both E. coli and Mycoplasma hyopneumoniae. Coding sequences from both organisms were converted into nucleotide vectors, enabling the computation of codon usage statistics. A comparative data frame is subsequently generated to analyse codon usage differences between the two species.
+#### Input: The ```uco``` function is used to calculate codon usage for both E. coli and Mycoplasma hyopneumoniae. Coding sequences from both organisms were converted into nucleotide vectors, enabling the computation of codon usage statistics. A comparative data frame printed using ```knitr: :kable``` is subsequently generated to analyse codon usage differences between the two species.
 #### Output: A codon usage table displays each codon's frequency for E. coli and Mycoplasma hyopneumoniae.
 
 
@@ -504,6 +529,11 @@ bottom_10_kmers_mycoplasma <- head(sort(mycoplasma_kmers, decreasing = FALSE), 1
 #Print top 10 over- and under-represented k-mers
 print(top_10_kmers_mycoplasma)
 print(bottom_10_kmers_mycoplasma)
+
+# Print the result using knitr::kable
+knitr::kable(top_10_kmers_mycoplasma)
+# Print the result using knitr::kable
+knitr::kable(bottom_10_kmers_mycoplasma)
 ```
 
 ### Ecoli k-mer
@@ -524,6 +554,12 @@ bottom_10_kmers_ecoli <- head(sort(ecoli_kmers, decreasing = FALSE), 10)
 #Print results
 print(top_10_kmers_ecoli)
 print(bottom_10_kmers_ecoli)
+
+# Print the result using knitr::kable
+knitr::kable(top_10_kmers_ecoli)
+# Print the result using knitr::kable
+knitr::kable(bottom_10_kmers_ecoli)
+
 ``` 
 
 
@@ -552,5 +588,5 @@ ggplot(combined_kmers, aes(x = Kmer, y = Frequency, fill = Organism)) +
   theme_minimal()
 ```
 
-#### Input: The "calculate_kmers" function determines k-mer frequencies (k=3, 4, 5) within the protein sequences. A k-mer represents a substring of length k extracted from the sequence. The function identified all possible k-mers and calculated their frequencies using the "table()" function. K-mer frequencies are computed for Mycoplasma hyopneumoniae and E. coli protein sequences, resulting in 3-mer, 4-mer, and 5-mer frequency tables. To identify over- and under-represented k-mers, the tables are sorted in decreasing and increasing order, yielding the top 10 k-mers for each category.
+#### Input: The ```calculate_kmers``` function determines k-mer frequencies (k=3, 4, 5) within the protein sequences. A k-mer represents a substring of length k extracted from the sequence. The function identified all possible k-mers and calculated their frequencies using the ```table``` function. K-mer frequencies are computed for Mycoplasma hyopneumoniae and E. coli protein sequences, resulting in 3-mer, 4-mer, and 5-mer frequency tables. To identify over- and under-represented k-mers, the tables are sorted in decreasing and increasing order, yielding the top 10 k-mers for each category.The "print" outputs the raw data to the console, while ```knitr::kable``` formats the same data into clean tables for better presentation in reports.
 #### Output: The top 10 over- and under-represented k-mers for both organisms are listed, and a bar plot of E. coli and Mycoplasma hyopneumoniae compares these top and bottom k-mers for both species.
