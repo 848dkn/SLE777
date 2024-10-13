@@ -10,7 +10,10 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Part 1: Gene Expression and Growth Data Analysis
-## 1.1 Read and Display Gene Expression Data
+### Introduction
+This report is part of an exercise focused on developing skills in data wrangling, mathematical operations, and visualization using R.The goal is to analyze two datasets, gene_expression.tsv and growth_data.csv, and perform various tasks such as data manipulation, statistical analysis, and generating plots.
+
+### 1.1 Read and Display Gene Expression Data
 ```{r install_packages, echo=FALSE, eval=FALSE}
 #download required packages 
 install.packages("ggplot2")
@@ -35,7 +38,7 @@ The result shown is a gene expression table, in which the first row is the title
 The cells in the table contain the gene expression values. These values indicate the level of expression of each gene in each sample. For example, row 1 shows that the DDX11L1 gene is not expressed in all samples (value = 0). Row 2 shows that the WASH7P gene is highly expressed in the second sample (value = 187) and third sample (143), but not expressed in the first sample (value = 0). This table illustrates the differences in gene expression levels between biological samples, suggesting that gene expression may depend on tissue type, biological conditions, or other factors.
 
 
-## 1.2 Adding a new column for the mean of other columns
+### 1.2 Adding a new column for the mean of other columns
 ```{r mean_of_columns, echo=FALSE}
 #give the mean of expression values a name
 meanofrow <- rowMeans(gene_expression) 
@@ -50,7 +53,7 @@ knitr::kable(table_of_values)
 The results are the output of the R code you executed to analyze the gene expression data. For example, for the gene ENSG00000227232.5_WASH7P, the expression levels in the first three samples were 187, 109, and 143, respectively, with a Mean of 146.33. Other genes showed varying expression levels across samples, with some genes not expressed in all samples, such as ENSG00000223972.5_DDX11L1 and ENSG00000237613.2_FAM138A, resulting in a mean of 0. The practical significance of this result is important in analyzing gene expression patterns, as the mean provides a simple overview of the expression level of each gene across many different samples. This is useful in biological analyses such as identifying genes that are significantly expressed under specific conditions or in certain tissues. Overall, this data table allows for a clear comparison of the expression levels of genes and their average values. 
 
 
-## 1.3 List the 10 genes with the highest mean expression
+### 1.3 List the 10 genes with the highest mean expression
 
 ```{r list_10_genes, echo=FALSE}
 #sort by Mean_Expression and list top 10 in a table 
@@ -62,7 +65,7 @@ knitr::kable(table_of_top10)
 The results shown in table in section 1.3 provide information on the 10 genes with the highest mean expression, with the Mean_Expression value indicating the activity level of each gene in the samples. The most highly expressed gene is ENSG00000198804.2_MT-CO1, with a mean value of 529317.3. These genes, such as MT-CO1  and MT-ND4, are mitochondrial genes and may play an important role in biological processes. This list can aid in studying the function and role of these genes in specific diseases or conditions. 
 
 
-## 1.4 Determine the number of genes with a mean <10
+### 1.4 Determine the number of genes with a mean <10
 
 ```{r gene_mean_<_10, echo=FALSE}
 #count and save number of genes with Mean_Expression < 10 as a value
@@ -73,7 +76,7 @@ knitr::kable(low_expression_genes)
 
 The results showed that there were 35,988 genes in the dataset with a mean expression value (Mean_Expression) of less than 10. Determining the number of these genes helps researchers identify genes with low expression levels. 
 
-## 1.5  Plot Histogram of Mean Expression
+### 1.5  Plot Histogram of Mean Expression
 
 ```{r plot_histogram_of_mean, echo=FALSE}
 #plot package
@@ -88,7 +91,7 @@ ggplot(gene_expression, aes(x = log10(Mean_Expression + 1))) +
 
 The histogram of Log10 Mean Gene Expression shows the distribution of gene expression levels. The X-axis represents the Log10 value of the mean gene expression, and the Y-axis represents the frequency of genes relative to the expression level. This histogram shows an uneven distribution of gene expression levels, with most genes having low expression levels.
 
-## 1.6 Import Tree Circumference Growth Data and display column names
+### 1.6 Import Tree Circumference Growth Data and display column names
 ```{r import_and_display, echo=FALSE}
 #reading the CSV file
 growth_data <- read.csv("growth_data.csv")
@@ -97,7 +100,7 @@ colnames(growth_data)
 
 ```
 
-## 1.7 Calculate the mean and standard deviation of tree circumference
+### 1.7 Calculate the mean and standard deviation of tree circumference
 
 ```{r mean_standard_deviation, echo=FALSE, message=FALSE, warning=FALSE} 
 #load necessary libraries
@@ -114,7 +117,7 @@ summary_stats <- growth_data %>%
 knitr::kable(summary_stats)
 ```
 
-## 1.8 Box plot of tree circumference at the start and end of the study at both sites
+### 1.8 Box plot of tree circumference at the start and end of the study at both sites
 
 ```{r box_plot_tree, echo=FALSE, message=FALSE, warning=FALSE}
 # Load necessary libraries
@@ -138,7 +141,7 @@ ggplot(long_data, aes(x = Year, y = Circumference, fill = Site)) +
 
 The resulting table in 1.7 shows the change in tree circumference between 2005 and 2020, divided by northeast and southwest. Over the 15 years, the average tree circumference increased significantly in both locations, with the northeast increasing from 5,292 cm to 54,228 cm and the southwest increasing from 4,862 cm to 45,596 cm. The northeast region consistently had a larger average circumference than the southwest. The standard deviation in 2020 was also much higher than in 2005, indicating that the variation in tree size had increased. This is also reflected in the box plot in 1.8, with the average tree circumference at both locations, northeast and southwest, in 2005 being low, below 10 cm, with little variation. However, by 2020, the average tree circumference had increased significantly in both locations. The northeast region had a larger average circumference and greater variation in tree circumference. In contrast, the southwest region had a slightly lower average circumference and less variation, but still had significant growth. In particular, the southwest region had one outlier, showing a tree with a significantly larger circumference than most other trees.
 
-## 1.9 Calculation of the mean growth over the last 10 years at each site
+### 1.9 Calculation of the mean growth over the last 10 years at each site
 
 ```{r mean_growth_over_10, echo=FALSE}
 #calculate the growth for each tree
@@ -153,7 +156,7 @@ mean_growth <- growth_data %>%
 knitr::kable(mean_growth)
 ```
 
-## 1.10 Perform a t-test to estimate the p-value
+### 1.10 Perform a t-test to estimate the p-value
 ```{r t_test, echo=FALSE, message=FALSE, warning=FALSE}
 #perform t-test to compare the growth between the two sites
 t_test_result <- t.test(Growthover10years ~ Site, data = growth_data)
@@ -180,7 +183,10 @@ The table in section 1.10 shows the results of Welch's t-test, which tests wheth
 ### Conlusion
 This report analyzed genetic and tree growth data using R tools such as ggplot2, dplyr, and tidyr. The results showed that there were significant differences in gene expression levels between biological samples and tree growth in different regions. However, a t-test analysis of the tree growth between the two regions showed that the difference in tree growth was not statistically significant at the 5% level (p-value = 0.06229), but was close to the 5% threshold, suggesting that the difference may still be biologically significant. 
 
-## Part 2: Examining Biological Sequence Diversity
+# Part 2: Examining Biological Sequence Diversity
+
+### Introduction
+This report examines biological sequence diversity by comparing the genomic features of Escherichia coli (E. coli) and Mycoplasma hyopneumoniae strain ES-2 (GCA_004768725). By analyzing coding DNA sequences (CDS), the report aims to explore key differences in codon usage, nucleotide and amino acid compositions, and the frequency of k-mers in protein sequences. The analysis will involve downloading coding sequences, calculating sequence lengths, visualizing nucleotide and amino acid frequencies, and utilizing R for data manipulation and statistical analysis.
 
 ``` {r install_load_packages, echo=FALSE, message=FALSE, warning=FALSE, eval=FALSE}
 ### Install and load packages
@@ -236,12 +242,12 @@ knitr::kable(num_sequences)
 library(Biostrings)
 total_coding <- data.frame(Organism = c("E. coli", "Mycoplasma hyopneumoniae"),
                            Total_Coding_DNA = c(sum(width(Ecoli_sequences)), sum(width(Mycoplasma_sequences))))
-total_coding #Present table for total coding DNA
+
 
 
 #Calculate total length of coding sequences for E. coli and Mycoplasma hyopneumoniae
 total_length_ecoli <- sum(width(Ecoli_sequences))
-total_length_ecoli
+
 total_length_mycoplasma <- sum(width(Mycoplasma_sequences))
 
 #Create a table with total coding DNA length
@@ -474,6 +480,11 @@ ggplot(combined_kmers, aes(x = Kmer, y = Frequency, fill = Organism)) +
 
 
 This analysis identifies over- and under-represented k-mers in Mycoplasma hyopneumoniae and E. coli protein sequences. These differences may reflect functional or evolutionary factors shaping protein composition (Chen et al., 2022). Variations in k-mer frequencies likely stem from genomic and proteomic differences, such as gene presence, regulatory elements, codon usage bias, and nucleotide composition (Bize et al., 2021).
+
+
+### Conclusion
+In conclusion, the analysis highlights the distinct genomic and proteomic features between Escherichia coli and Mycoplasma hyopneumoniae. Escherichia coli, with its larger genome and greater coding DNA length, exhibits longer coding sequences and a more diverse set of codons, reflecting its complex metabolic processes and ecological adaptability. In contrast, Mycoplasma hyopneumoniae displays a streamlined genome with shorter coding sequences and more specialized codon usage, consistent with its reduced genome and specialized lifestyle. The over- and under-representation of k-mers in protein sequences between these organisms suggests evolutionary pressures that have shaped their genomic and proteomic composition, influencing factors such as gene regulation, protein structure, and organism-specific functions. These findings provide valuable insights into how genomic diversity impacts bacterial adaptation and evolution.
+
 
 
 # References
