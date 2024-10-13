@@ -98,7 +98,7 @@ colnames(growth_data)
 
 ## 1.7 Calculate the mean and standard deviation of tree circumference
 
-```{r mean_standard_deviation, echo=FALSE, message=FALSE, warning=FALSE}
+```{r mean_standard_deviation, echo=FALSE, message=FALSE, warning=FALSE} 
 #load necessary libraries
 library(dplyr)
 #calculate the mean and standard deviation of tree circumferences at the start (2005) and end (2020) of the study for both control and treatment sites

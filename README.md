@@ -134,7 +134,7 @@ A new data frame name ```summary_stats``` containing the mean and standard devia
 
 
 ### 1.8 Box plot of tree circumference at the start and end of the study at both sites
-
+ 
 ```ruby
 # Load necessary libraries
 install.packages("tidyr")
