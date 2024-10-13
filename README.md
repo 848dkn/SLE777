@@ -1,5 +1,15 @@
 # SLE777
 ## Part 1: Gene Expression and Growth Data Analysis
+## Introduction
+In modern data science, the ability to process, analyze, and interpret complex datasets is essential for drawing meaningful insights. This report involves building proficiency in data wrangling, performing mathematical operations, and creating visualizations using R, one of the most powerful tools for statistical computing. Additionally, mastering collaboration platforms like GitHub is crucial for effective teamwork, version control, and sharing code.
+## Packages Use:
+```ggplot2```: Use for data visualization (histograms, box plots).
+```dplyr```: Use for data manipulation, grouping, summarizing, and filtering.
+```tidyr```: Use for reshaping data.
+## Dataset:
+``` gene_expression.tsv ```: A TSV file containing gene expression levels across various genes.
+``` growth_data.csv ```: A CSV file containing tree circumference measurements at different time points (2005, 2010, 2015, 2020) and at different sites (northeast and southwest).
+
 # Objectives of the Analysis
 Compute an average expression for each gene and exhibit the distribution of protein expression levels overall to provide a summary of gene expression.
 Detect Highly Expressed Genes: Develop a list comprising the top ten markers with the highest average expression values; these genes might be significant factors in the physiological procedure under consideration.
@@ -223,6 +233,18 @@ Command ```print()```shows the results
 The results of a t-test comparing the 10-year growth between the two sites
 
 ## Part 2: Examining Biological Sequence Diversity
+##Introduction
+This report analyses the genomic sequence diversity between Escherichia coli (E. coli) and Mycoplasma hyopneumoniae strain ES-2 (GCA_004768725). The key genomic features are compared by analysing coding DNA sequences (CDS), such as the number and length of coding sequences, nucleotide and amino acid compositions, and codon usage bias. Visualisations, such as boxplots and bar graphs, effectively highlight these differences. Furthermore, over- and under-represented k-mers in protein sequences are analysed, exploring how evolutionary pressures may have influenced the genomes of these two bacteria.
+ 
+##Packages Use
+```Biostrings```: Use for handling DNA and protein sequences.
+```R.utils```: Use for file manipulation, memory-efficient data handling, and working with compressed files.
+```seqinr```: Use for sequence input/output and codon usage calculations.
+```ggplot2```: Use for creating visualizations such as histograms, box plots, and bar plots.
+##Dataset
+```E. coli CDS```: Coding DNA sequences for E. coli downloaded from the Ensembl Bacteria database.
+```Mycoplasma hyopneumoniae CDS```: Coding DNA sequences for Mycoplasma hyopneumoniae strain ES-2 downloaded from the Ensembl Bacteria database.
+
 
 ```ruby
 ### Install and load packages
