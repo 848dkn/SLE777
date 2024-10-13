@@ -385,7 +385,7 @@ knitr::kable(mean_median_lengths)
 Additionally, the ```mean``` and ```median``` functions are used to calculate the average and median lengths of coding sequences for both organisms.
 
 #### Output: A boxplot of the coding sequence lengths for E. coli and Mycoplasma hyopneumoniae and a table displaying the mean and median coding sequence lengths for both organisms.
-
+ 
 
 ### 2.4 The frequency of DNA bases in the total coding sequences for both organisms
 
