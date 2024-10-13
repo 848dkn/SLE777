@@ -85,14 +85,35 @@ ggplot(gene_expression, aes(x = log10(Mean_Expression + 1))) +
 
 ```
 
+The histogram of Log10 Mean Gene Expression shows the distribution of gene expression levels. The X-axis represents the Log10 value of the mean gene expression, and the Y-axis represents the frequency of genes relative to the expression level. This histogram shows an uneven distribution of gene expression levels, with most genes having low expression levels.
 
+## 1.6 Import Tree Circumference Growth Data and display column names
+```{r import_and_display, echo=FALSE}
+#reading the CSV file
+growth_data <- read.csv("growth_data.csv")
+# view column names in console
+colnames(growth_data)
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## 1.7 Calculate the mean and standard deviation of tree circumference
+
+```{r mean_standard_deviation, echo=FALSE, message=FALSE, warning=FALSE}
+#load necessary libraries
+library(dplyr)
+#calculate the mean and standard deviation of tree circumferences at the start (2005) and end (2020) of the study for both control and treatment sites
+summary_stats <- growth_data %>%
+  group_by(Site) %>%
+  summarise(
+    Mean_Circumf_2005 = mean(Circumf_2005_cm, na.rm = TRUE),
+    SD_Circumf_2005 = sd(Circumf_2005_cm, na.rm = TRUE),
+    Mean_Circumf_2020 = mean(Circumf_2020_cm, na.rm = TRUE),
+    SD_Circumf_2020 = sd(Circumf_2020_cm, na.rm = TRUE)  )
+#print the summary statistics
+knitr::kable(summary_stats)
+```
+
+
+
+
+

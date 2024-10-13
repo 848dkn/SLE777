@@ -110,8 +110,9 @@ A data frame named ```growth_data```, containing the information from the CSV fi
 
 ```ruby
 #load necessary libraries
-install.packages("dplyr")
+
 library(dplyr)
+
 #calculate the mean and standard deviation of tree circumferences at the start (2005) and end (2020) of the study for both control and treatment sites
 summary_stats <- growth_data %>%
   group_by(Site) %>%
