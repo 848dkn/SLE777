@@ -50,13 +50,14 @@ download.file("https://raw.githubusercontent.com/ghazkha/Assessment4/refs/heads/
 gene_expression <- read.delim("gene_expression.tsv", header = TRUE, row.names = 1)
 
 #displaying the first six rows
-
-head(gene_expression, n = 6)
+first6row <- head(gene_expression, n = 6)
+knitr::kable(first6row)
 ```
 #### Input: 
 
 The ```download.file``` function is used to download files from a URL with the argument ```destfile``` specifies the destination path where the file will be saved locally. 
 The command ```read.delim``` reads a tab-separated file (.tsv) into a data frame. In this command, the argument ```header = TRUE``` and ```name =1```  is use to indicate that the first row contains the column names row and specify that the first column ```gene identifiers``` will be used as the row names of the data frame.
+```knitr::kable()```function from the knitr package is used for generating dynamic reports in R Markdown similar to ```print()``` in R script.
 
 #### Output:
 The gene expression data is read into R as a data frame named ```gene_expression``` use for data manipulation. A table showing the first 6 genes.
@@ -72,10 +73,11 @@ meanofrow <- rowMeans(gene_expression)
 gene_expression$Mean_Expression <- meanofrow 
 #show a table of values for the first six genes
 table_of_values <- head(gene_expression, 6)  
-print(table_of_values)  
+knitr::kable(table_of_values)  
 ````
 #### Input: 
-Command ```rowMeans()``` computes the mean of each row, averaging expression values across the different sample columns. The mean values are saved into a variable to be added as a new column. The ```head()``` command is used to display the first six rows of the updated data frame for quick inspection
+Command ```rowMeans()``` computes the mean of each row, averaging expression values across the different sample columns. The mean values are saved into a variable to be added as a new column. The ```head()``` command is used to display the first six rows of the updated data frame for quick inspection. 
+```knitr::kable()```function from the knitr package is used for generating dynamic reports in R Markdown similar to ```print()``` in R script.
 #### Output: 
 A table showing the first six genes, including their expression values and the new mean expression column.
 
@@ -86,10 +88,11 @@ A table showing the first six genes, including their expression values and the n
 #sort by Mean_Expression and list top 10 in a table 
 top_genes <- gene_expression[order(-gene_expression$Mean_Expression), ]
 table_of_top10 <- top_genes[1:10, ]
-View(table_of_top10)
+knitr::kable(table_of_top10)
 ```
 #### Input: 
 The ```order()```command sorts the data frame in descending order. The first 10 rows are sorted from the data frame as the top 10 genes.
+```knitr::kable()```function from the knitr package is used for generating dynamic reports in R Markdown similar to ```print()``` in R script.
 #### Output: 
 A table of the top 10 genes with the highest mean expression values.
 
@@ -99,11 +102,12 @@ A table of the top 10 genes with the highest mean expression values.
 ```ruby
 #count and save number of genes with Mean_Expression < 10 as a value
 low_expression_genes <- sum(gene_expression$Mean_Expression < 10)
-low_expression_genes
+knitr::kable(low_expression_genes)
 
 ```
 #### Input: 
 Command ```sum()``` counts the number of genes in column ```Mean_Expression``` that are lower than 10
+```knitr::kable()```function from the knitr package is used for generating dynamic reports in R Markdown similar to ```print()``` in R script.
 ### Output: 
 The count of genes where the mean expression is less than 10.
 
@@ -155,13 +159,13 @@ summary_stats <- growth_data %>%
     Mean_Circumf_2020 = mean(Circumf_2020_cm, na.rm = TRUE),
     SD_Circumf_2020 = sd(Circumf_2020_cm, na.rm = TRUE)  )
 #print the summary statistics
-print(summary_stats)
+knitr::kable(summary_stats)
 ```
 #### Input: 
 Command ```library()``` load the required dplyr package. 
 Command ```group_by()``` groups the data by the Site column
 Command ```summarise()``` calculates summary statistics for each group of data from the command mean() and sd(), with the ```na.rm = TRUE``` argument ensuring that missing values (NA) are ignored during these calculations.
-Command print() displays the content of the data frame.
+```knitr::kable()```function from the knitr package is used for generating dynamic reports in R Markdown similar to ```print()``` in R script.
 #### Output: 
 A new data frame name ```summary_stats``` containing the mean and standard deviation of tree circumferences at both sites in 2005 and 2020.
 
@@ -170,7 +174,6 @@ A new data frame name ```summary_stats``` containing the mean and standard devia
  
 ```ruby
 # Load necessary libraries
-install.packages("tidyr")
 library(dplyr)
 library(tidyr)
 library(ggplot2)
@@ -206,14 +209,14 @@ mean_growth <- growth_data %>%
   group_by(Site) %>%
   summarise(Mean_Growth = mean(Growthover10years))  # Compute mean growth
 #print the mean growth
-print(mean_growth)
+knitr::kable(mean_growth)
 ```
 #### Input: 
 The pipe operator ```%>%``` takes the ```growth_data``` data frame and passes it as input to the next function in the chain. 
 Command ```mutate()``` adds a new column to the data frame that has a difference between the values of the start (2005) and end (2020) of the study. 
 Command ```group_by()``` groups the data by site.
 Command ```summarise(Mean_Growth = mean())``` summarises the average 10-year growth for each site.
-Command ```print()``` displays the mean growth for both sites.
+```knitr::kable()```function from the knitr package is used for generating dynamic reports in R Markdown similar to ```print()``` in R script.
 #### Output: 
 A summary table mean_growth that shows the mean growth over 10 years at each site.
 
@@ -222,13 +225,24 @@ A summary table mean_growth that shows the mean growth over 10 years at each sit
 ```ruby
 #perform t-test to compare the growth between the two sites
 t_test_result <- t.test(Growthover10years ~ Site, data = growth_data)
-#print the t-test results
-print(t_test_result)
+
+# Extract the t-test results into a data frame
+t_test_summary <- data.frame(
+  Statistic = t_test_result$statistic,
+  P_Value = t_test_result$p.value,
+  Conf_Interval_Lower = t_test_result$conf.int[1],
+  Conf_Interval_Upper = t_test_result$conf.int[2],
+  Mean_Difference = t_test_result$estimate[1] - t_test_result$estimate[2]
+)
+
+# Print the t-test results using knitr::kable
+knitr::kable(t_test_summary, caption = "T-Test Results: Growth Over 10 Years Between Sites")
+
 ```
 #### Input: 
 Command ```t.test()``` performs a t-test to determine the significant difference in 10-year growth between the two sites.
 The ```~ Site``` grouping variable specifies that the growth differences should be compared between the sites.
-Command ```print()```shows the results
+```knitr::kable()```function from the knitr package is used for generating dynamic reports in R Markdown similar to ```print()``` in R script.
 #### Output: 
 The results of a t-test comparing the 10-year growth between the two sites
 

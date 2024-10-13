@@ -16,6 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 install.packages("ggplot2")
 install.packages("dplyr")
 install.packages("tidyr")
+
 #download required files
 download.file("https://raw.githubusercontent.com/ghazkha/Assessment4/refs/heads/main/gene_expression.tsv", destfile = "gene_expression.tsv")
 download.file("https://raw.githubusercontent.com/ghazkha/Assessment4/refs/heads/main/growth_data.csv", destfile = "growth_data.csv")
@@ -30,7 +31,7 @@ knitr::kable(first6row)
 ```
 
 
-The result shown in the figure is a gene expression table, in which the first row is the title of the biological samples from the GTEx (Genotype-Tissue Expression) project. For example, sample codes such as GTEX.1117F.0226.SM.5GZZ7, GTEX.1117F.0426.SM.5EGHI, and GTEX.1117F.0526.SM.5EGHJ represent biological samples from donors, corresponding to different conditions or tissues. The first column contains the ENSG identifiers (Ensembl Gene IDs) of the genes, such as ENSG00000223972.5 (DDX11L1) and ENSG00000227232.5 (WASH7P), which are used to identify the genes in the Ensembl database.
+The result shown is a gene expression table, in which the first row is the title of the biological samples from the GTEx (Genotype-Tissue Expression) project. For example, sample codes such as GTEX.1117F.0226.SM.5GZZ7, GTEX.1117F.0426.SM.5EGHI, and GTEX.1117F.0526.SM.5EGHJ represent biological samples from donors, corresponding to different conditions or tissues. The first column contains the ENSG identifiers (Ensembl Gene IDs) of the genes, such as ENSG00000223972.5 (DDX11L1) and ENSG00000227232.5 (WASH7P), which are used to identify the genes in the Ensembl database.
 The cells in the table contain the gene expression values. These values indicate the level of expression of each gene in each sample. For example, row 1 shows that the DDX11L1 gene is not expressed in all samples (value = 0). Row 2 shows that the WASH7P gene is highly expressed in the second sample (value = 187) and third sample (143), but not expressed in the first sample (value = 0). This table illustrates the differences in gene expression levels between biological samples, suggesting that gene expression may depend on tissue type, biological conditions, or other factors.
 
 
@@ -46,7 +47,7 @@ table_of_values <- head(gene_expression, 6)
 knitr::kable(table_of_values) 
 ```
 
-The results shown in the figure are the output of the R code you executed to analyze the gene expression data. For example, for the gene ENSG00000227232.5_WASH7P, the expression levels in the first three samples were 187, 109, and 143, respectively, with a Mean of 146.33. Other genes showed varying expression levels across samples, with some genes not expressed in all samples, such as ENSG00000223972.5_DDX11L1 and ENSG00000237613.2_FAM138A, resulting in a mean of 0. The practical significance of this result is important in analyzing gene expression patterns, as the mean provides a simple overview of the expression level of each gene across many different samples. This is useful in biological analyses such as identifying genes that are significantly expressed under specific conditions or in certain tissues. Overall, this data table allows for a clear comparison of the expression levels of genes and their average values. 
+The results are the output of the R code you executed to analyze the gene expression data. For example, for the gene ENSG00000227232.5_WASH7P, the expression levels in the first three samples were 187, 109, and 143, respectively, with a Mean of 146.33. Other genes showed varying expression levels across samples, with some genes not expressed in all samples, such as ENSG00000223972.5_DDX11L1 and ENSG00000237613.2_FAM138A, resulting in a mean of 0. The practical significance of this result is important in analyzing gene expression patterns, as the mean provides a simple overview of the expression level of each gene across many different samples. This is useful in biological analyses such as identifying genes that are significantly expressed under specific conditions or in certain tissues. Overall, this data table allows for a clear comparison of the expression levels of genes and their average values. 
 
 
 ## 1.3 List the 10 genes with the highest mean expression
@@ -58,7 +59,7 @@ table_of_top10 <- top_genes[1:10, ]
 knitr::kable(table_of_top10)
 ```
 
-The results shown in the figure provide information on the 10 genes with the highest mean expression, with the Mean_Expression value indicating the activity level of each gene in the samples. The most highly expressed gene is ENSG00000198804.2_MT-CO1, with a mean value of 529317.3. These genes, such as MT-CO1  and MT-ND4, are mitochondrial genes and may play an important role in biological processes. This list can aid in studying the function and role of these genes in specific diseases or conditions. 
+The results shown in table in section 1.3 provide information on the 10 genes with the highest mean expression, with the Mean_Expression value indicating the activity level of each gene in the samples. The most highly expressed gene is ENSG00000198804.2_MT-CO1, with a mean value of 529317.3. These genes, such as MT-CO1  and MT-ND4, are mitochondrial genes and may play an important role in biological processes. This list can aid in studying the function and role of these genes in specific diseases or conditions. 
 
 
 ## 1.4 Determine the number of genes with a mean <10
@@ -113,6 +114,67 @@ summary_stats <- growth_data %>%
 knitr::kable(summary_stats)
 ```
 
+## 1.8 Box plot of tree circumference at the start and end of the study at both sites
+
+```{r box_plot_tree, echo=FALSE, message=FALSE, warning=FALSE}
+# Load necessary libraries
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+#gather the data for Circumf_2005_cm and Circumf_2020_cm into long format
+long_data <- growth_data %>%
+  select(Site, Circumf_2005_cm, Circumf_2020_cm) %>%
+  pivot_longer(cols = starts_with("Circumf"), 
+               names_to = "Year", 
+               values_to = "Circumference")
+#create the box plot
+ggplot(long_data, aes(x = Year, y = Circumference, fill = Site)) +
+  geom_boxplot() +
+  labs(title = "Box Plot of Tree Circumference at Start and End of Study At Both Sites",
+       x = "Year",
+       y = "Tree Circumference (cm)") +
+  scale_x_discrete(labels = c("Circumf_2005_cm" = "2005", "Circumf_2020_cm" = "2020")) +  theme_minimal()
+```  
+
+The resulting table in 1.7 shows the change in tree circumference between 2005 and 2020, divided by northeast and southwest. Over the 15 years, the average tree circumference increased significantly in both locations, with the northeast increasing from 5,292 cm to 54,228 cm and the southwest increasing from 4,862 cm to 45,596 cm. The northeast region consistently had a larger average circumference than the southwest. The standard deviation in 2020 was also much higher than in 2005, indicating that the variation in tree size had increased. This is also reflected in the box plot in 1.8, with the average tree circumference at both locations, northeast and southwest, in 2005 being low, below 10 cm, with little variation. However, by 2020, the average tree circumference had increased significantly in both locations. The northeast region had a larger average circumference and greater variation in tree circumference. In contrast, the southwest region had a slightly lower average circumference and less variation, but still had significant growth. In particular, the southwest region had one outlier, showing a tree with a significantly larger circumference than most other trees.
+
+## 1.9 Calculation of the mean growth over the last 10 years at each site
+
+```{r mean_growth_over_10, echo=FALSE}
+#calculate the growth for each tree
+growth_data <- growth_data %>%
+  mutate(Growthover10years = Circumf_2020_cm - Circumf_2010_cm)  #mutate add a new column that contain calculation
+
+#calculate the mean growth at each site
+mean_growth <- growth_data %>%
+  group_by(Site) %>%
+  summarise(Mean_Growth = mean(Growthover10years))  # Compute mean growth
+#print the mean growth
+knitr::kable(mean_growth)
+```
+
+## 1.10 Perform a t-test to estimate the p-value
+```{r t_test, echo=FALSE, message=FALSE, warning=FALSE}
+#perform t-test to compare the growth between the two sites
+t_test_result <- t.test(Growthover10years ~ Site, data = growth_data)
+
+# Extract the t-test results into a data frame
+t_test_summary <- data.frame(
+  Statistic = t_test_result$statistic,
+  P_Value = t_test_result$p.value,
+  Conf_Interval_Lower = t_test_result$conf.int[1],
+  Conf_Interval_Upper = t_test_result$conf.int[2],
+  Mean_Difference = t_test_result$estimate[1] - t_test_result$estimate[2]
+)
+
+# Print the t-test results using knitr::kable
+knitr::kable(t_test_summary, caption = "T-Test Results: Growth Over 10 Years Between Sites")
+
+```
+
+The table in section 1.9 shows the average growth of tree girth from 2010 to 2020 in each region, with trees in the northeast region having higher average growth than those in the southwest.
+
+The table in section 1.10 shows the results of Welch's t-test, which tests whether the difference in average growth between the two regions is statistically significant. The test results yield a p-value of 0.06229, slightly above the common threshold of 0.05. This means that the difference in growth is not statistically significant at the 5% level. However, this value is close to significance, suggesting that the difference may be significant, but the statistical evidence from this test is limited.
 
 
 
